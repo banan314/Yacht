@@ -18,7 +18,7 @@ static LPCTSTR lpszAppName = LPCTSTR("GL Template");
 static HINSTANCE hInstance;
 
 // Rotation amounts
-static GLfloat xRot = 0.0f;
+static GLfloat xRot = -90.0f;
 static GLfloat yRot = 0.0f;
 
 
@@ -186,14 +186,14 @@ void szescian(void)
 	{
 		// Parametry wierzcholkow
 
-		GLfloat sa[3] = { -25.0f, 0.0f, 20.0f };
-		GLfloat sb[3] = { 25.0f, 0.0f, 20.0f };
-		GLfloat sc[3] = { 25.0f, 10.0f, 20.0f };
-		GLfloat sd[3] = { -25.0f, 10.0f, 20.0f };
-		GLfloat se[3] = { -25.0f, 0.0f, -20.0f };
-		GLfloat sf[3] = { 25.0f, 0.0f, -20.0f };
-		GLfloat sg[3] = { 25.0f, 10.0f, -20.0f };
-		GLfloat sh[3] = { -25.0f, 10.0f, -20.0f };
+		GLfloat sa[3] = { -25.0f, 20.0f , 0.0f};
+		GLfloat sb[3] = { 25.0f, 20.0f , 0.0f};
+		GLfloat sc[3] = { 25.0f, 20.0f , 10.0f};
+		GLfloat sd[3] = { -25.0f, 20.0f , 10.0f};
+		GLfloat se[3] = { -25.0f, -20.0f , 0.0f};
+		GLfloat sf[3] = { 25.0f, -20.0f , 0.0f};
+		GLfloat sg[3] = { 25.0f, -20.0f , 10.0f};
+		GLfloat sh[3] = { -25.0f, -20.0f , 10.0f};
 
 
 		// Sciany skladowe
@@ -253,12 +253,12 @@ void kadlub(void)
 	{
 		// Parametry wierzcholkow
 
-		GLfloat ka[3] = { 25.0f, 0.0f, 20.0f };
-		GLfloat kb[3] = { 40.0f, 0.0f, 0.0f };
-		GLfloat kc[3] = { 25.0f, 0.0f, -20.0f };
-		GLfloat kd[3] = { 25.0f, 10.0f, 20.0f };
-		GLfloat ke[3] = { 40.0f, 10.0f, 0.0f };
-		GLfloat kf[3] = { 25.0f, 10.0f, -20.0f };
+		GLfloat ka[3] = { 25.0f, 20.0f , 0.0f};
+		GLfloat kb[3] = { 40.0f, 0.0f , 0.0f};
+		GLfloat kc[3] = { 25.0f, -20.0f , 0.0f};
+		GLfloat kd[3] = { 25.0f, 20.0f , 10.0f};
+		GLfloat ke[3] = { 40.0f, 0.0f , 10.0f};
+		GLfloat kf[3] = { 25.0f, -20.0f , 10.0f};
 
 
 		// Sciany skladowe
@@ -327,14 +327,14 @@ void rufa(void)
 	{
 		// Parametry wierzcholkow
 
-		GLfloat ra[3] = { -25.0f, 0.0f, 20.0f }; //tak samo jak w szescianie
-		GLfloat rb[3] = { -35.0f, 0.0f, 5.0f };
-		GLfloat rc[3] = { -35.0f, 10.0f, 5.0f };
-		GLfloat rd[3] = { -25.0f, 10.0f, 20.0f }; //tak samo jak w szescianie
-		GLfloat re[3] = { -25.0f, 0.0f, -20.0f }; //tak samo jak w szescianie
-		GLfloat rf[3] = { -35.0f, 0.0f, -5.0f };
-		GLfloat rg[3] = { -35.0f, 10.0f, -5.0f };
-		GLfloat rh[3] = { -25.0f, 10.0f, -20.0f }; //tak samo jak w szescianie
+		GLfloat ra[3] = { -25.0f, 20.0f , 0.0f}; //tak samo jak w szescianie
+		GLfloat rb[3] = { -35.0f, 5.0f , 0.0f};
+		GLfloat rc[3] = { -35.0f, 5.0f , 10.0f};
+		GLfloat rd[3] = { -25.0f, 20.0f , 10.0f}; //tak samo jak w szescianie
+		GLfloat re[3] = { -25.0f, -20.0f , 0.0f}; //tak samo jak w szescianie
+		GLfloat rf[3] = { -35.0f, -5.0f , 0.0f};
+		GLfloat rg[3] = { -35.0f, -5.0f , 10.0f};
+		GLfloat rh[3] = { -25.0f, -20.0f , 10.0f}; //tak samo jak w szescianie
 		//GLfloat r[24] = { ra[0], ra[1], ra[2], rb[0], rb[1], rb[2], rc[0], rc[1], rc[2], rd[0], rd[1], rd[2], rf[0], rf[1], rf[2], rg[0], rg[1], rg[2], rh[0], rh[1], rh[2] };
 
 		// Sciany skladowe
@@ -393,12 +393,16 @@ void maszt(void)
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	{
 		glColor3f(0.0f, 0.0f, 0.0f);
-		drawCuboid(new GLfloat[6] { 4, 6, 10, 90, -1, 1 });
+		drawCuboid(new GLfloat[6] { 4, 6, -1, 1, 10, 90 });
 	}
 }
 
-
-
+//rysuje akwen
+void akwen(void)
+{
+	glColor3f(0.084, 0.648, 0.8);
+	glRectf(-300, -300, 300, 300);
+}
 
 // LoadBitmapFile
 // opis: ³aduje mapê bitow¹ z pliku i zwraca jej adres.
@@ -479,7 +483,7 @@ void RenderScene(void)
 	// Save the matrix state and do the rotations
 	glPushMatrix();
 	glRotatef(xRot, 1.0f, 0.0f, 0.0f);
-	glRotatef(yRot, 0.0f, 1.0f, 0.0f);
+	glRotatef(yRot, 0.0f, 0.0f, 1.0f);
 
 	/////////////////////////////////////////////////////////////////
 	// MIEJSCE NA KOD OPENGL DO TWORZENIA WLASNYCH SCEN:		   //
@@ -496,6 +500,7 @@ void RenderScene(void)
 	kadlub();
 	rufa();
 	maszt();
+	akwen();
 
 	/////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
