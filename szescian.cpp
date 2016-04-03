@@ -20,6 +20,7 @@ static HINSTANCE hInstance;
 // Rotation amounts
 static GLfloat xRot = -90.0f;
 static GLfloat yRot = 0.0f;
+static GLfloat xTrans, yTrans, zTrans;
 
 
 static GLsizei lastHeight;
@@ -383,25 +384,67 @@ void rufa(void)
 		glVertex3fv(rg);
 		glVertex3fv(rf);
 		glEnd();
-
+		
 	}
 }
 
+
 ///rysuje czarny maszt dlugi na 8m, na prawo od srodka ukladu wspólrzednych
-void maszt(void)
+void maszt(float masztDlugosc, float masztDolWysokosc)
 {
+	
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	{
 		glColor3f(0.0f, 0.0f, 0.0f);
-		drawCuboid(new GLfloat[6] { 4, 6, -1, 1, 10, 90 });
+		drawCuboid(new GLfloat[6] { 4, 6, -1, 1, masztDolWysokosc, (masztDolWysokosc + masztDlugosc) });
 	}
+}
+
+void drawTriangle(float *v1, float *v2, float *v3)
+{
+	glBegin(GL_TRIANGLES);
+		glNormal3fv(v1); glVertex3fv(v1);
+		glNormal3fv(v2); glVertex3fv(v2);
+		glNormal3fv(v3); glVertex3fv(v3);
+	glEnd();
 }
 
 //rysuje akwen
 void akwen(void)
 {
-	glColor3f(0.084, 0.648, 0.8);
+	glColor3f(0.084f, 0.648f, 0.8f);
 	glRectf(-300, -300, 300, 300);
+}
+
+void zagiel(float masztDlugosc, float masztDolWysokosc)
+{
+	glColor3f(0.95f, 0.95f, 0.95f);
+	drawTriangle(new float[3] {5.0f, 0.0f, masztDolWysokosc + masztDlugosc / 11.0f},
+		new float[3] {5.0f, 0.0f, (masztDolWysokosc + masztDlugosc)},
+		new float[3] {-20.0f, 0.0f, masztDolWysokosc + masztDlugosc / 11.0f + 1});
+	drawTriangle(new float[3] {5.0f, 0.0f, masztDolWysokosc},
+		new float[3] {7.0f, 0.0f, masztDolWysokosc + masztDlugosc / 16.5f * 13.0f},
+		new float[3] {30.0f, 0.0f, masztDolWysokosc * 2.0f / 3.0f});
+}
+
+void brzeg()
+{
+	glColor3i(151, 85, 26);
+		glBegin(GL_LINE_LOOP);
+		glVertex2f(-300, -280);
+		glVertex2f(-250, -300);
+		glVertex2f(-200, -250);
+		glVertex2f(-150, -270);
+		glVertex2f(-100, -250);
+		glVertex2f(-50, -320);
+		glVertex2f(0, -310);
+		glVertex2f(50, -140);
+		glVertex2f(100, -200);
+		glVertex2f(150, -200);
+		glVertex2f(200, -200);
+		glVertex2f(250, -200);
+		glVertex2f(300, -200);
+	glEnd();
 }
 
 // LoadBitmapFile
@@ -484,6 +527,7 @@ void RenderScene(void)
 	glPushMatrix();
 	glRotatef(xRot, 1.0f, 0.0f, 0.0f);
 	glRotatef(yRot, 0.0f, 0.0f, 1.0f);
+	glTranslatef(xTrans, yTrans, zTrans);
 
 	/////////////////////////////////////////////////////////////////
 	// MIEJSCE NA KOD OPENGL DO TWORZENIA WLASNYCH SCEN:		   //
@@ -499,8 +543,10 @@ void RenderScene(void)
 	szescian();
 	kadlub();
 	rufa();
-	maszt();
+	maszt(80.0f, 10.0f);
 	akwen();
+	zagiel(80.0f, 10.0f);
+	brzeg();
 
 	/////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -654,14 +700,14 @@ int APIENTRY WinMain(HINSTANCE       hInst,
 	// Create the main application window
 	hWnd = CreateWindow(
 		lpszAppName,
-		lpszAppName,
+		TEXT("Boat"),
 
 		// OpenGL requires WS_CLIPCHILDREN and WS_CLIPSIBLINGS
 		WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
 
 		// Window position and size
-		50, 50,
-		400, 400,
+		CW_USEDEFAULT, CW_USEDEFAULT,
+		CW_USEDEFAULT, CW_USEDEFAULT,
 		NULL,
 		NULL,
 		hInstance,
@@ -682,6 +728,8 @@ int APIENTRY WinMain(HINSTANCE       hInst,
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
+
+	UnregisterClass(lpszAppName, hInstance);
 
 	return msg.wParam;
 }
@@ -840,17 +888,27 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 		// Key press, check for arrow keys to do cube rotation.
 	case WM_KEYDOWN:
 	{
-					   if (wParam == VK_UP)
+					   if (wParam == VK_UP || wParam == VK_NUMPAD8)
 						   xRot -= 5.0f;
 
-					   if (wParam == VK_DOWN)
+					   if (wParam == VK_DOWN || wParam == VK_NUMPAD2)
 						   xRot += 5.0f;
 
-					   if (wParam == VK_LEFT)
+					   if (wParam == VK_LEFT || wParam == VK_NUMPAD4)
 						   yRot -= 5.0f;
 
-					   if (wParam == VK_RIGHT)
+					   if (wParam == VK_RIGHT || wParam == VK_NUMPAD6)
 						   yRot += 5.0f;
+
+					   if (wParam == 'd')
+						   xTrans += 3.0f;
+					   if (wParam == 'a')
+						   xTrans -= 3.0f;
+					   if (wParam == 'w')
+						   yTrans += 3.0f;
+					   if (wParam == 's')
+						   yTrans -= 3.0f;
+					   
 
 					   xRot = (const int)xRot % 360;
 					   yRot = (const int)yRot % 360;
