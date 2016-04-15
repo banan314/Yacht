@@ -31,6 +31,8 @@ BITMAPINFOHEADER	bitmapInfoHeader;	// nag³ówek obrazu
 unsigned char*		bitmapData;			// dane tekstury
 unsigned int		texture[2];			// obiekt tekstury
 
+//size
+static GLfloat nRange = 5000.0f;
 
 // Declaration for Window procedure
 LRESULT CALLBACK WndProc(HWND    hWnd,
@@ -102,7 +104,6 @@ void calcNormal(float v[3][3], float out[3])
 // Change viewing volume and viewport.  Called when window is resized
 void ChangeSize(GLsizei w, GLsizei h)
 {
-	GLfloat nRange = 100.0f;
 	GLfloat fAspect;
 	// Prevent a divide by zero
 	if (h == 0)
@@ -181,7 +182,7 @@ void SetupRC()
 	glColor3f(0.0, 0.0, 0.0);
 }
 
-void szescian(void)
+void kadlub(void)
 {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	{
@@ -248,7 +249,7 @@ void szescian(void)
 	}
 }
 
-void kadlub(void)
+void dziob(void)
 {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	{
@@ -413,7 +414,7 @@ void drawTriangle(float *v1, float *v2, float *v3)
 void akwen(void)
 {
 	glColor3f(0.084f, 0.648f, 0.8f);
-	glRectf(-300, -300, 300, 300);
+	glRectf(-5500, -5500, 5500, 5500);
 }
 
 void zagiel(float masztDlugosc, float masztDolWysokosc)
@@ -427,23 +428,872 @@ void zagiel(float masztDlugosc, float masztDolWysokosc)
 		new float[3] {30.0f, 0.0f, masztDolWysokosc * 2.0f / 3.0f});
 }
 
-void brzeg()
+void marina(void)
 {
-	glColor3i(151, 85, 26);
-		glBegin(GL_LINE_LOOP);
-		glVertex2f(-300, -280);
-		glVertex2f(-250, -300);
-		glVertex2f(-200, -250);
-		glVertex2f(-150, -270);
-		glVertex2f(-100, -250);
-		glVertex2f(-50, -320);
-		glVertex2f(0, -310);
-		glVertex2f(50, -140);
-		glVertex2f(100, -200);
-		glVertex2f(150, -200);
-		glVertex2f(200, -200);
-		glVertex2f(250, -200);
-		glVertex2f(300, -200);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	{
+		//Kolor portu
+		GLfloat portr, portg, portb;
+
+		portr = 0.5f;
+		portg = 0.5f;
+		portb = 0.5f;
+
+
+		// Parametry wierzcholkow
+
+		//s0 - segment 0
+
+		//s1
+		GLfloat m01[3] = { -2900.0f, 0.0f, -770.0f };
+		GLfloat m02[3] = { -2400.0f, -1270.0f, 0.0f };
+		GLfloat m03[3] = { -2240.0f, -1270.0f, 0.0f };
+
+		GLfloat m46_1[3] = { -2240.0f, -2900.0f, 0.0f };
+		GLfloat m46[3] = { -2900.0f, -2900.0f, 0.0f };
+
+		//s2
+		GLfloat m06_1[3] = { -2900.0f, -1570.0f, 0.0f };
+		//GLfloat m03[3] = { -2240.0f,0.0f,-1270.0f };
+
+		GLfloat m04[3] = { -2190.0f, -1170.0f, 0.0f };
+		GLfloat m05[3] = { -1990.0f, -1370.0f, 0.0f };
+
+		GLfloat m06[3] = { -2190.0f, -1570.0f, 0.0f };
+
+		//s3
+		//GLfloat m46_1[3] = { -2900.0f,0.0f,-2900.0f };
+		//GLfloat m06_1[3] = { -2900.0f,0.0f,-1570.0f };
+
+		//GLfloat m06[3] = { -2190.0f,0.0f,-1570.0f };
+		GLfloat m07[3] = { -1990.0f, -1770.0f, 0.0f };
+		GLfloat m08[3] = { -1390.0f, -2370.0f, 0.0f };
+
+		GLfloat m46_2[3] = { -1390.0f, -2900.0f, 0.0f };
+
+		//s4
+		//GLfloat m46_2[3] = { -1390.0f,0.0f,-2900.0f };
+
+		GLfloat m09[3] = { -190.0f, -1970.0f, 0.0f };
+		GLfloat m10[3] = { -220.0f, -770.0f, 0.0f };
+
+		GLfloat m46_3[3] = { -190.0f, -2900.0f, 0.0f };
+
+		//s5
+		//GLfloat m46_3[3] = { -190.0f,0.0f,-2900.0f };
+		//GLfloat m09[3] = { -190.0f,0.0f,-1970.0f };
+		GLfloat m15[3] = { -90.0f, -1400.0f, 0.0f };
+		GLfloat m46_4[3] = { -90.0f, -2900.0f, 0.0f };
+
+		//s6
+		//GLfloat m09[3] = { -190.0f,0.0f,-1970.0f };
+		//GLfloat m10[3] = { -220.0f,0.0f,-770.0f };
+		GLfloat m14[3] = { -105.0f, -800.0f, 0.0f };
+		//GLfloat m15[3] = { -90.0f,0.0f,-1400.0f };
+
+		//s7
+		//GLfloat m10[3] = { -220.0f,0.0f,-770.0f };
+
+		GLfloat m11[3] = { -130.0f, -650.0f, 0.0f };
+		GLfloat m12[3] = { 800.0f, -450.0f, 0.0f };
+		GLfloat m13[3] = { 800.0f, -550.0f, 0.0f };
+		//GLfloat m14[3] = { -105.0f,0.0f,-800.0f };
+
+		//s8
+		//GLfloat m46_4[3] = { -90.0f,0.0f,-2900.0f };
+		//GLfloat m15[3] = { -90.0f,0.0f,-1400.0f };
+
+		GLfloat m16[3] = { 1110.0f, -1350.0f, 0.0f };
+
+		GLfloat m46_5[3] = { 1110.0f, -2900.0f, 0.0f };
+
+		//s9
+		//GLfloat m46_5[3] = { 1110.0f,0.0f,-2900.0f };
+		//GLfloat m16[3] = { 1110.0f,0.0f,-1350.0f };
+
+		GLfloat m17[3] = { 1110.0f, -1300.0f, 0.0f };
+		GLfloat m18[3] = { 1410.0f, -1300.0f, 0.0f };
+
+		GLfloat m46_6[3] = { 1410.0f, -2900.0f, 0.0f };
+
+		//s10
+		//GLfloat m46_6[3] = { 1410.0f,0.0f,-2900.0f };
+		//GLfloat m18[3] = { 1410.0f,0.0f,-1300.0f };
+
+		GLfloat m19[3] = { 1410.0f, -1000.0f, 0.0f };
+		GLfloat m20[3] = { 1700.0f, -1000.0f, 0.0f };
+		GLfloat m21[3] = { 1700.0f, -1050.0f, 0.0f };
+
+		GLfloat m46_7[3] = { 1700.0f, -2900.0f, 0.0f };
+
+		//s11
+		//GLfloat m46_7[3] = { 1700.0f,0.0f,-2900.0f };
+		//GLfloat m21[3] = { 1700.0f,0.0f,-1050.0f };
+
+		GLfloat m22[3] = { 2000.0f, -1250.0f, 0.0f };
+		GLfloat m23[3] = { 2200.0f, -1550.0f, 0.0f };
+		GLfloat m24[3] = { 2500.0f, -1700.0f, 0.0f };
+
+		GLfloat m46_8[3] = { 2500.0f, -2900.0f, 0.0f };
+
+		//s12
+		//GLfloat m46_8[3] = { 2500.0f,0.0f,-2900.0f };
+		//GLfloat m24[3] = { 2500.0f,0.0f,-1700.0f };
+
+		GLfloat m25[3] = { 2800.0f, -1600.0f, 0.0f };
+		GLfloat m26[3] = { 4000.0f, -1900.0f, 0.0f };
+		GLfloat m27[3] = { 3850.0f, -2000.0f, 0.0f };
+
+		GLfloat m46_9[3] = { 3850.0f, -2900.0f, 0.0f };
+
+		//s13
+		//GLfloat m46_9[3] = { 3850.0f,0.0f,-2900.0f };
+		//GLfloat m27[3] = { 3850.0f,0.0f,-2000.0f };
+
+		GLfloat m28[3] = { 4150.0f, -2250.0f, 0.0f };
+		GLfloat m29[3] = { 4300.0f, -2300.0f, 0.0f };
+
+		GLfloat m46_10[3] = { 4300.0f, -2900.0f, 0.0f };
+
+		//s14
+		//GLfloat m46_10[3] = { 4300.0f,0.0f,-2900.0f };
+		//GLfloat m29[3] = { 4300.0f,0.0f,-2300.0f };
+
+		GLfloat m30[3] = { 4600.0f, -2050.0f, 0.0f };
+
+		GLfloat m46_11[3] = { 4600.0f, -2900.0f, 0.0f };
+
+		//s15
+		//GLfloat m46_11[3] = { 4600.0f,0.0f,-2900.0f };
+		//GLfloat m30[3] = { 4600.0f,0.0f,-2050.0f };
+
+		GLfloat m45_1[3] = { 5500.0f, -2050.0f, 0.0f };
+		GLfloat m45[3] = { 5500.0f, -2900.0f, 0.0f };
+
+		//s16
+		//GLfloat m45_1[3] = { 5500.0f,0.0f,-2050.0f };
+		//GLfloat m30[3] = { 4600.0f,0.0f,-2050.0f };
+
+		GLfloat m31[3] = { 4200.0f, -1900.0f, 0.0f };
+		GLfloat m32[3] = { 4300.0f, -1550.0f, 0.0f };
+
+		GLfloat m45_2[3] = { 5500.0f, -1550.0f, 0.0f };
+
+		//s17
+		//GLfloat m45_2[3] = { 5500.0f,0.0f,-1550.0f };
+		//GLfloat m32[3] = { 4300.0f,0.0f,-1550.0f };
+
+		GLfloat m33[3] = { 4150.0f, -1200.0f, 0.0f };
+		GLfloat m34[3] = { 4000.0f, -950.0f, 0.0f };
+		GLfloat m35[3] = { 4150.0f, -500.0f, 0.0f };
+
+		GLfloat m45_3[3] = { 5500.0f, -500.0f, 0.0f };
+
+		//s18
+		//GLfloat m45_3[3] = { 5500.0f,0.0f,-500.0f };
+		//GLfloat m35[3] = { 4150.0f,0.0f,-500.0f };
+
+		GLfloat m36[3] = { 4600.0f, 0.0f, 0.0f };
+		GLfloat m45_4[3] = { 5500.0f, 0.0f, 0.0f };
+
+		//s19
+		//GLfloat m45_4[3] = { 5500.0f,0.0f,0.0f };
+		//GLfloat m36[3] = { 4600.0f,0.0f,0.0f };
+
+		GLfloat m41[3] = { 4750.0f, 800.0f, 0.0f };
+		GLfloat m42[3] = { 4900.0f, 900.0f, 0.0f };
+		GLfloat m45_5[3] = { 5500.0f, 900.0f, 0.0f };
+
+		//s20
+		//GLfloat m36[3] = { 4600.0f,0.0f,0.0f };
+
+		GLfloat m37[3] = { 4150.0f, 600.0f, 0.0f };
+		GLfloat m38[3] = { 4000.0f, 800.0f, 0.0f };
+		GLfloat m39[3] = { 4200.0f, 1100.0f, 0.0f };
+		GLfloat m40[3] = { 4350.0f, 1100.0f, 0.0f };
+
+		//GLfloat m41[3] = { 4750.0f,0.0f,800.0f };
+
+		//21
+		//GLfloat m45_5[3] = { 5500.0f,0.0f,900.0f };
+		//GLfloat m42[3] = { 4900.0f,0.0f,900.0f };
+
+		GLfloat m43[3] = { 5150.0f, 1500.0f, 0.0f };
+		GLfloat m44[3] = { 5500.0f, 2000.0f, 0.0f };
+
+		//GLfloat m45[3] = { 5500.0f,0.0f,-2900.0f };
+
+		//GLfloat m46[3] = { -2900.0f,0.0f,-2900.0f };
+
+
+		//Góra mariny
+
+		GLfloat mg01[3] = { -2900.0f, -770.0f, 10.0f };
+		GLfloat mg02[3] = { -2400.0f, -1270.0f, 10.0f };
+		GLfloat mg03[3] = { -2240.0f, -1270.0f, 10.0f };
+		GLfloat mg46_1[3] = { -2240.0f, -2900.0f, 10.0f };
+		GLfloat mg46[3] = { -2900.0f, -2900.0f, 10.0f };
+		GLfloat mg06_1[3] = { -2900.0f, -1570.0f, 10.0f };
+		GLfloat mg04[3] = { -2190.0f, -1170.0f, 10.0f };
+		GLfloat mg05[3] = { -1990.0f, -1370.0f, 10.0f };
+		GLfloat mg06[3] = { -2190.0f, -1570.0f, 10.0f };
+		GLfloat mg07[3] = { -1990.0f, -1770.0f, 10.0f };
+		GLfloat mg08[3] = { -1390.0f, -2370.0f, 10.0f };
+		GLfloat mg46_2[3] = { -1390.0f, -2900.0f, 10.0f };
+		GLfloat mg09[3] = { -190.0f, -1970.0f, 10.0f };
+		GLfloat mg10[3] = { -220.0f, -770.0f, 10.0f };
+		GLfloat mg46_3[3] = { -190.0f, -2900.0f, 10.0f };
+		GLfloat mg15[3] = { -90.0f, -1400.0f, 10.0f };
+		GLfloat mg46_4[3] = { -90.0f, -2900.0f, 10.0f };
+		GLfloat mg14[3] = { -105.0f, -800.0f, 10.0f };
+		GLfloat mg11[3] = { -130.0f, -650.0f, 10.0f };
+		GLfloat mg12[3] = { 800.0f, -450.0f, 10.0f };
+		GLfloat mg13[3] = { 800.0f, -550.0f, 10.0f };
+		GLfloat mg16[3] = { 1110.0f, -1350.0f, 10.0f };
+		GLfloat mg46_5[3] = { 1110.0f, -2900.0f, 10.0f };
+		GLfloat mg17[3] = { 1110.0f, -1300.0f, 10.0f };
+		GLfloat mg18[3] = { 1410.0f, -1300.0f, 10.0f };
+		GLfloat mg46_6[3] = { 1410.0f, -2900.0f, 10.0f };
+		GLfloat mg19[3] = { 1410.0f, -1000.0f, 10.0f };
+		GLfloat mg20[3] = { 1700.0f, -1000.0f, 10.0f };
+		GLfloat mg21[3] = { 1700.0f, -1050.0f, 10.0f };
+		GLfloat mg46_7[3] = { 1700.0f, -2900.0f, 10.0f };
+		GLfloat mg22[3] = { 2000.0f, -1250.0f, 10.0f };
+		GLfloat mg23[3] = { 2200.0f, -1550.0f, 10.0f };
+		GLfloat mg24[3] = { 2500.0f, -1700.0f, 10.0f };
+		GLfloat mg46_8[3] = { 2500.0f, -2900.0f, 10.0f };
+		GLfloat mg25[3] = { 2800.0f, -1600.0f, 10.0f };
+		GLfloat mg26[3] = { 4000.0f, -1900.0f, 10.0f };
+		GLfloat mg27[3] = { 3850.0f, -2000.0f, 10.0f };
+		GLfloat mg46_9[3] = { 3850.0f, -2900.0f, 10.0f };
+		GLfloat mg28[3] = { 4150.0f, -2250.0f, 10.0f };
+		GLfloat mg29[3] = { 4300.0f, -2300.0f, 10.0f };
+		GLfloat mg46_10[3] = { 4300.0f, -2900.0f, 10.0f };
+		GLfloat mg30[3] = { 4600.0f, -2050.0f, 10.0f };
+		GLfloat mg46_11[3] = { 4600.0f, -2900.0f, 10.0f };
+		GLfloat mg45_1[3] = { 5500.0f, -2050.0f, 10.0f };
+		GLfloat mg45[3] = { 5500.0f, -2900.0f, 10.0f };
+		GLfloat mg31[3] = { 4200.0f, -1900.0f, 10.0f };
+		GLfloat mg32[3] = { 4300.0f, -1550.0f, 10.0f };
+		GLfloat mg45_2[3] = { 5500.0f, -1550.0f, 10.0f };
+		GLfloat mg33[3] = { 4150.0f, -1200.0f, 10.0f };
+		GLfloat mg34[3] = { 4000.0f, -950.0f, 10.0f };
+		GLfloat mg35[3] = { 4150.0f, -500.0f, 10.0f };
+		GLfloat mg45_3[3] = { 5500.0f, -500.0f, 10.0f };
+		GLfloat mg36[3] = { 4600.0f, 0.0f, 10.0f };
+		GLfloat mg45_4[3] = { 5500.0f, 0.0f, 10.0f };
+		GLfloat mg41[3] = { 4750.0f, 800.0f, 10.0f };
+		GLfloat mg42[3] = { 4900.0f, 900.0f, 10.0f };
+		GLfloat mg45_5[3] = { 5500.0f, 900.0f, 10.0f };
+		GLfloat mg37[3] = { 4150.0f, 600.0f, 10.0f };
+		GLfloat mg38[3] = { 4000.0f, 800.0f, 10.0f };
+		GLfloat mg39[3] = { 4200.0f, 1100.0f, 10.0f };
+		GLfloat mg40[3] = { 4350.0f, 1100.0f, 10.0f };
+		GLfloat mg43[3] = { 5150.0f, 1500.0f, 10.0f };
+		GLfloat mg44[3] = { 5500.0f, 2000.0f, 10.0f };
+
+
+		// Sciany skladowe
+
+		//s1
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m01);
+		glVertex3fv(m02);
+		glVertex3fv(m03);
+		glVertex3fv(m46);
+		glVertex3fv(m46_1);
+		glEnd();
+
+		//s2
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m06_1);
+		glVertex3fv(m03);
+		glVertex3fv(m04);
+		glVertex3fv(m05);
+		glVertex3fv(m06);
+		glEnd();
+
+		//s3
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m46_1);
+		glVertex3fv(m06_1);
+		glVertex3fv(m06);
+		glVertex3fv(m07);
+		glVertex3fv(m08);
+		glVertex3fv(m46_2);
+		glEnd();
+
+		//s4
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m46_2);
+		glVertex3fv(m08);
+		glVertex3fv(m09);
+		glVertex3fv(m46_3);
+		glEnd();
+
+		//s5
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m46_3);
+		glVertex3fv(m09);
+		glVertex3fv(m15);
+		glVertex3fv(m46_4);
+		glEnd();
+
+		//s6
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m09);
+		glVertex3fv(m10);
+		glVertex3fv(m14);
+		glVertex3fv(m15);
+		glEnd();
+
+		//s7
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m10);
+		glVertex3fv(m11);
+		glVertex3fv(m12);
+		glVertex3fv(m13);
+		glVertex3fv(m14);
+		glEnd();
+
+		//s8
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m46_4);
+		glVertex3fv(m15);
+		glVertex3fv(m16);
+		glVertex3fv(m46_5);
+		glEnd();
+
+		//s9
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m46_5);
+		glVertex3fv(m16);
+		glVertex3fv(m17);
+		glVertex3fv(m18);
+		glVertex3fv(m46_6);
+		glEnd();
+
+		//s10
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m46_6);
+		glVertex3fv(m18);
+		glVertex3fv(m19);
+		glVertex3fv(m20);
+		glVertex3fv(m21);
+		glVertex3fv(m46_7);
+		glEnd();
+
+		//s11
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m46_7);
+		glVertex3fv(m21);
+		glVertex3fv(m22);
+		glVertex3fv(m23);
+		glVertex3fv(m24);
+		glVertex3fv(m46_8);
+		glEnd();
+
+		//s12
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m46_8);
+		glVertex3fv(m24);
+		glVertex3fv(m25);
+		glVertex3fv(m26);
+		glVertex3fv(m27);
+		glVertex3fv(m46_9);
+		glEnd();
+
+		//s13
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m46_9);
+		glVertex3fv(m27);
+		glVertex3fv(m28);
+		glVertex3fv(m29);
+		glVertex3fv(m46_10);
+		glEnd();
+
+		//s14
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m46_10);
+		glVertex3fv(m29);
+		glVertex3fv(m30);
+		glVertex3fv(m46_11);
+		glEnd();
+
+		//s15
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m46_11);
+		glVertex3fv(m30);
+		glVertex3fv(m45_1);
+		glVertex3fv(m45);
+		glEnd();
+
+		//s16
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m45_1);
+		glVertex3fv(m30);
+		glVertex3fv(m31);
+		glVertex3fv(m32);
+		glVertex3fv(m45_2);
+		glEnd();
+
+		//s17
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m45_2);
+		glVertex3fv(m32);
+		glVertex3fv(m33);
+		glVertex3fv(m34);
+		glVertex3fv(m35);
+		glVertex3fv(m45_3);
+		glEnd();
+
+		//s18
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m45_3);
+		glVertex3fv(m35);
+		glVertex3fv(m36);
+		glVertex3fv(m45_4);
+		glEnd();
+
+		//s19
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m45_4);
+		glVertex3fv(m36);
+		glVertex3fv(m41);
+		glVertex3fv(m42);
+		glVertex3fv(m45_5);
+		glEnd();
+
+		//s20
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m36);
+		glVertex3fv(m37);
+		glVertex3fv(m38);
+		glVertex3fv(m39);
+		glVertex3fv(m40);
+		glVertex3fv(m41);
+		glEnd();
+
+		//s21
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m45_5);
+		glVertex3fv(m42);
+		glVertex3fv(m43);
+		glVertex3fv(m44);
+		glEnd();
+
+		//Œciany góra
+
+		//s1
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(mg01);
+		glVertex3fv(mg02);
+		glVertex3fv(mg03);
+		glVertex3fv(mg46);
+		glVertex3fv(mg46_1);
+		glEnd();
+
+		//s2
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(mg06_1);
+		glVertex3fv(mg03);
+		glVertex3fv(mg04);
+		glVertex3fv(mg05);
+		glVertex3fv(mg06);
+		glEnd();
+
+		//s3
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(mg46_1);
+		glVertex3fv(mg06_1);
+		glVertex3fv(mg06);
+		glVertex3fv(mg07);
+		glVertex3fv(mg08);
+		glVertex3fv(mg46_2);
+		glEnd();
+
+		//Port
+
+		//s4
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(mg46_2);
+		glVertex3fv(mg08);
+		glVertex3fv(mg09);
+		glVertex3fv(mg46_3);
+		glEnd();
+
+		//s5
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(mg46_3);
+		glVertex3fv(mg09);
+		glVertex3fv(mg15);
+		glVertex3fv(mg46_4);
+		glEnd();
+
+		//s6
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(mg09);
+		glVertex3fv(mg10);
+		glVertex3fv(mg14);
+		glVertex3fv(mg15);
+		glEnd();
+
+		//s7
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(mg10);
+		glVertex3fv(mg11);
+		glVertex3fv(mg12);
+		glVertex3fv(mg13);
+		glVertex3fv(mg14);
+		glEnd();
+
+		//s8
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(mg46_4);
+		glVertex3fv(mg15);
+		glVertex3fv(mg16);
+		glVertex3fv(mg46_5);
+		glEnd();
+
+		//s9
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(mg46_5);
+		glVertex3fv(mg16);
+		glVertex3fv(mg17);
+		glVertex3fv(mg18);
+		glVertex3fv(mg46_6);
+		glEnd();
+
+		//s10
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(mg46_6);
+		glVertex3fv(mg18);
+		glVertex3fv(mg19);
+		glVertex3fv(mg20);
+		glVertex3fv(mg21);
+		glVertex3fv(mg46_7);
+		glEnd();
+
+		//s11
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(mg46_7);
+		glVertex3fv(mg21);
+		glVertex3fv(mg22);
+		glVertex3fv(mg23);
+		glVertex3fv(mg24);
+		glVertex3fv(mg46_8);
+		glEnd();
+
+		//s12
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(mg46_8);
+		glVertex3fv(mg24);
+		glVertex3fv(mg25);
+		glVertex3fv(mg26);
+		glVertex3fv(mg27);
+		glVertex3fv(mg46_9);
+		glEnd();
+
+		//Port - Koniec
+
+		//s13
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(mg46_9);
+		glVertex3fv(mg27);
+		glVertex3fv(mg28);
+		glVertex3fv(mg29);
+		glVertex3fv(mg46_10);
+		glEnd();
+
+		//s14
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(mg46_10);
+		glVertex3fv(mg29);
+		glVertex3fv(mg30);
+		glVertex3fv(mg46_11);
+		glEnd();
+
+		//s15
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(mg46_11);
+		glVertex3fv(mg30);
+		glVertex3fv(mg45_1);
+		glVertex3fv(mg45);
+		glEnd();
+
+		//s16
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(mg45_1);
+		glVertex3fv(mg30);
+		glVertex3fv(mg31);
+		glVertex3fv(mg32);
+		glVertex3fv(mg45_2);
+		glEnd();
+
+		//s17
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(mg45_2);
+		glVertex3fv(mg32);
+		glVertex3fv(mg33);
+		glVertex3fv(mg34);
+		glVertex3fv(mg35);
+		glVertex3fv(mg45_3);
+		glEnd();
+
+		//s18
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(mg45_3);
+		glVertex3fv(mg35);
+		glVertex3fv(mg36);
+		glVertex3fv(mg45_4);
+		glEnd();
+
+		//s19
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(mg45_4);
+		glVertex3fv(mg36);
+		glVertex3fv(mg41);
+		glVertex3fv(mg42);
+		glVertex3fv(mg45_5);
+		glEnd();
+
+		//s20
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(mg36);
+		glVertex3fv(mg37);
+		glVertex3fv(mg38);
+		glVertex3fv(mg39);
+		glVertex3fv(mg40);
+		glVertex3fv(mg41);
+		glEnd();
+
+		//s21
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glBegin(GL_POLYGON);
+		glVertex3fv(mg45_5);
+		glVertex3fv(mg42);
+		glVertex3fv(mg43);
+		glVertex3fv(mg44);
+		glEnd();
+
+		//Œciany boczne
+
+		//Port segmenty s4 - s12
+
+		//s4
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m08);
+		glVertex3fv(mg08);
+		glVertex3fv(mg09);
+		glVertex3fv(m09);
+		glEnd();
+
+		//s6
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m09);
+		glVertex3fv(mg09);
+		glVertex3fv(mg10);
+		glVertex3fv(m10);
+		glEnd();
+
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m14);
+		glVertex3fv(mg14);
+		glVertex3fv(mg15);
+		glVertex3fv(m15);
+		glEnd();
+
+		//s7
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m10);
+		glVertex3fv(mg10);
+		glVertex3fv(mg11);
+		glVertex3fv(m11);
+		glEnd();
+
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m11);
+		glVertex3fv(mg11);
+		glVertex3fv(mg12);
+		glVertex3fv(m12);
+		glEnd();
+
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m12);
+		glVertex3fv(mg12);
+		glVertex3fv(mg11);
+		glVertex3fv(m13);
+		glEnd();
+
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m13);
+		glVertex3fv(mg13);
+		glVertex3fv(mg14);
+		glVertex3fv(m14);
+		glEnd();
+
+		//s8
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m15);
+		glVertex3fv(mg15);
+		glVertex3fv(mg16);
+		glVertex3fv(m16);
+		glEnd();
+
+		//s9
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m16);
+		glVertex3fv(mg16);
+		glVertex3fv(mg17);
+		glVertex3fv(m17);
+		glEnd();
+
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m17);
+		glVertex3fv(mg17);
+		glVertex3fv(mg18);
+		glVertex3fv(m18);
+		glEnd();
+
+		//s10
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m18);
+		glVertex3fv(mg18);
+		glVertex3fv(mg19);
+		glVertex3fv(m19);
+		glEnd();
+
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m19);
+		glVertex3fv(mg19);
+		glVertex3fv(mg20);
+		glVertex3fv(m20);
+		glEnd();
+
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m20);
+		glVertex3fv(mg20);
+		glVertex3fv(mg21);
+		glVertex3fv(m21);
+		glEnd();
+
+		//s11
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m21);
+		glVertex3fv(mg21);
+		glVertex3fv(mg22);
+		glVertex3fv(m22);
+		glEnd();
+
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m22);
+		glVertex3fv(mg22);
+		glVertex3fv(mg23);
+		glVertex3fv(m23);
+		glEnd();
+
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m23);
+		glVertex3fv(mg23);
+		glVertex3fv(mg24);
+		glVertex3fv(m24);
+		glEnd();
+
+		//s12
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m24);
+		glVertex3fv(mg24);
+		glVertex3fv(mg25);
+		glVertex3fv(m25);
+		glEnd();
+
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m25);
+		glVertex3fv(mg25);
+		glVertex3fv(mg26);
+		glVertex3fv(m26);
+		glEnd();
+
+		glColor3f(portr, portg, portb);
+		glBegin(GL_POLYGON);
+		glVertex3fv(m26);
+		glVertex3fv(mg26);
+		glVertex3fv(mg27);
+		glVertex3fv(m27);
+		glEnd();
+	}
+}
+
+void yacht(float x, float y, float z)
+{
+	kadlub();
+}
+
+void swimming(float navigation[3][100])
+{
+	glColor3f(0, 0, 0);
+	glBegin(GL_LINE_STRIP);
+	for (int i = 0; i < 100; i++)
+		glVertex3f(navigation[0][i], navigation[1][i], navigation[2][i]);
 	glEnd();
 }
 
@@ -540,13 +1390,37 @@ void RenderScene(void)
 	//glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 
 	//Rysowanie obiektów:
-	szescian();
 	kadlub();
+	dziob();
 	rufa();
 	maszt(80.0f, 10.0f);
 	akwen();
 	zagiel(80.0f, 10.0f);
-	brzeg();
+	marina();
+
+	GLfloat navigation[3][100];
+	const float deltaAlpha = 0.0827, deltaL = 32.56, length = 2000.0, height = 800,
+		radius = 400;
+	float alpha = -GL_PI/2;
+	for (int i = 0; i < 100; i++)
+	{
+		navigation[2][i] = 0;
+	}
+	for (int i = 0; i <= 62; i++)
+	{
+		navigation[0][i] = i * deltaL;
+		navigation[1][i] = 0;
+	}
+	for (int i = 63; i < 99; i++)
+	{
+		navigation[0][i] = length + radius * cos(alpha);
+		navigation[1][i] = radius + radius * sin(alpha);
+		alpha += deltaAlpha;
+	}
+	navigation[0][99] = 2000;
+	navigation[1][99] = 800;
+
+	swimming(navigation);
 
 	/////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -900,15 +1774,42 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 					   if (wParam == VK_RIGHT || wParam == VK_NUMPAD6)
 						   yRot += 5.0f;
 
-					   if (wParam == 'd')
-						   xTrans += 3.0f;
-					   if (wParam == 'a')
-						   xTrans -= 3.0f;
-					   if (wParam == 'w')
-						   yTrans += 3.0f;
-					   if (wParam == 's')
-						   yTrans -= 3.0f;
-					   
+					   if (wParam == 0x41 + 'd' - 'a')
+						   xTrans += 10.0f;
+					   if (wParam == 0x41)
+						   xTrans -= 10.0f;
+					   if (wParam == 0x41 + 'w' - 'a')
+						   yTrans += 10.0f;
+					   if (wParam == 0x41 + 's' - 'a')
+						   yTrans -= 10.0f;
+
+					   if (wParam == VK_ADD)
+					   {
+						   nRange -= 100.0;
+						   RECT rc;
+						   GetWindowRect(hWnd, &rc);
+						   GLsizei w = rc.right - rc.left, h = rc.top - rc.bottom;
+							
+						   // Call our function which modifies the clipping
+						   // volume and viewport
+						   ChangeSize(w, h);
+						   InvalidateRect(hWnd, NULL, FALSE);
+						   break;
+					   }
+					   if (wParam == VK_SUBTRACT)
+					   {
+							if (nRange > 100)
+								nRange += 100;
+							RECT rc;
+							GetWindowRect(hWnd, &rc);
+							GLsizei w = rc.right - rc.left, h = rc.top - rc.bottom;
+
+							// Call our function which modifies the clipping
+							// volume and viewport
+							ChangeSize(w, h);
+							InvalidateRect(hWnd, NULL, FALSE);
+							break;
+					   }
 
 					   xRot = (const int)xRot % 360;
 					   yRot = (const int)yRot % 360;
