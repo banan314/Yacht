@@ -1627,6 +1627,9 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 		// Store the device context
 		hDC = GetDC(hWnd);
 
+		//set timer for time-out 70ms
+		SetTimer(hWnd, NULL, 70, NULL);
+
 		// Select the pixel format
 		SetDCPixelFormat(hDC);
 
@@ -1785,7 +1788,8 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 
 					   if (wParam == VK_ADD)
 					   {
-						   nRange -= 100.0;
+						   if (nRange > 100)
+								nRange -= 100.0;
 						   RECT rc;
 						   GetWindowRect(hWnd, &rc);
 						   GLsizei w = rc.right - rc.left, h = rc.top - rc.bottom;
@@ -1797,8 +1801,7 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 						   break;
 					   }
 					   if (wParam == VK_SUBTRACT)
-					   {
-							if (nRange > 100)
+					   {							
 								nRange += 100;
 							RECT rc;
 							GetWindowRect(hWnd, &rc);
@@ -1839,6 +1842,13 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 	}
 		break;
 
+	case WM_TIMER:
+	{
+		//change the position of the boat
+
+					 InvalidateRect(hWnd, NULL, FALSE);
+					 break;
+	}
 
 	default:   // Passes it on if unproccessed
 		return (DefWindowProc(hWnd, message, wParam, lParam));
