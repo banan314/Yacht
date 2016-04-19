@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include "resource.h"           // About box resource identifiers.
 
+#include "shapeUtils.h"
+
 #define glRGB(x, y, z)	glColor3ub((GLubyte)x, (GLubyte)y, (GLubyte)z)
 #define BITMAP_ID 0x4D42		// identyfikator formatu BMP
 #define GL_PI 3.14
@@ -22,6 +24,8 @@ static GLfloat xRot = -90.0f;
 static GLfloat yRot = 0.0f;
 static GLfloat xTrans, yTrans, zTrans;
 
+//boat constants
+GLfloat navigation[3][100];
 
 static GLsizei lastHeight;
 static GLsizei lastWidth;
@@ -302,27 +306,6 @@ void dziob(void)
 	}
 }
 
-void drawCuboid(GLfloat xyz[6])
-{
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	{
-
-		for (int j = 0; j < 2; j++)
-		for (int i = 0; i < 3; i++)
-		{
-			int foox = (i == 0) * j;
-			int fooy = (i == 1) * j + 2;
-			int fooz = (i == 2) * j + 4;
-			glBegin(GL_POLYGON);
-				glVertex3f(xyz[foox], xyz[fooy], xyz[fooz]);
-				glVertex3f(xyz[foox + (i != 0)], xyz[fooy + (i == 0)], xyz[fooz]);
-				glVertex3f(xyz[foox + (i != 0)], xyz[fooy + (i != 1)], xyz[fooz + (i != 2)]);
-				glVertex3f(xyz[foox], xyz[fooy + (i == 2)], xyz[fooz + (i != 2)]);
-			glEnd();
-		}
-	}
-}
-
 void rufa(void)
 {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -399,15 +382,6 @@ void maszt(float masztDlugosc, float masztDolWysokosc)
 		glColor3f(0.0f, 0.0f, 0.0f);
 		drawCuboid(new GLfloat[6] { 4, 6, -1, 1, masztDolWysokosc, (masztDolWysokosc + masztDlugosc) });
 	}
-}
-
-void drawTriangle(float *v1, float *v2, float *v3)
-{
-	glBegin(GL_TRIANGLES);
-		glNormal3fv(v1); glVertex3fv(v1);
-		glNormal3fv(v2); glVertex3fv(v2);
-		glNormal3fv(v3); glVertex3fv(v3);
-	glEnd();
 }
 
 //rysuje akwen
@@ -1398,7 +1372,6 @@ void RenderScene(void)
 	zagiel(80.0f, 10.0f);
 	marina();
 
-	GLfloat navigation[3][100];
 	const float deltaAlpha = 0.0827, deltaL = 32.56, length = 2000.0, height = 800,
 		radius = 400;
 	float alpha = -GL_PI/2;
@@ -1620,6 +1593,8 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 	static HGLRC hRC;               // Permenant Rendering context
 	static HDC hDC;                 // Private GDI Device context
 
+	UINT_PTR TimerID;
+
 	switch (message)
 	{
 		// Window creation, setup for OpenGL
@@ -1628,8 +1603,8 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 		hDC = GetDC(hWnd);
 
 		//set timer for time-out 70ms
-		SetTimer(hWnd, NULL, 70, NULL);
-
+		SetTimer(hWnd, TimerID, 70, NULL);
+		
 		// Select the pixel format
 		SetDCPixelFormat(hDC);
 
@@ -1694,6 +1669,7 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 		// Tell the application to terminate after the window
 		// is gone.
 		PostQuitMessage(0);
+		KillTimer(hWnd, TimerID);
 		break;
 
 		// Window is resized.
