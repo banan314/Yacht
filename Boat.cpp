@@ -246,3 +246,4 @@ void Boat::setPosition(float x, float y, float z)
 Boat::~Boat()
 {
 }
+

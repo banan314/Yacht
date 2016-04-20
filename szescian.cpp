@@ -26,6 +26,7 @@ static GLfloat xTrans, yTrans, zTrans;
 
 //boat constants
 GLfloat navigation[3][100];
+
 int time = 0;
 
 static GLsizei lastHeight;
