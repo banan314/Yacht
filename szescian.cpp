@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include "resource.h"           // About box resource identifiers.
 
-#include "shapeUtils.h"
+#include "Boat.h"
 
 #define glRGB(x, y, z)	glColor3ub((GLubyte)x, (GLubyte)y, (GLubyte)z)
 #define BITMAP_ID 0x4D42		// identyfikator formatu BMP
@@ -26,6 +26,7 @@ static GLfloat xTrans, yTrans, zTrans;
 
 //boat constants
 GLfloat navigation[3][100];
+int time = 0;
 
 static GLsizei lastHeight;
 static GLsizei lastWidth;
@@ -36,7 +37,7 @@ unsigned char*		bitmapData;			// dane tekstury
 unsigned int		texture[2];			// obiekt tekstury
 
 //size
-static GLfloat nRange = 5000.0f;
+static GLfloat nRange = 3000.0f;
 
 // Declaration for Window procedure
 LRESULT CALLBACK WndProc(HWND    hWnd,
@@ -184,6 +185,36 @@ void SetupRC()
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	// Black brush
 	glColor3f(0.0, 0.0, 0.0);
+}
+
+void drawCuboid(GLfloat xyz[6])
+{
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	{
+
+		for (int j = 0; j < 2; j++)
+			for (int i = 0; i < 3; i++)
+			{
+				int foox = (i == 0) * j;
+				int fooy = (i == 1) * j + 2;
+				int fooz = (i == 2) * j + 4;
+				glBegin(GL_POLYGON);
+				glVertex3f(xyz[foox], xyz[fooy], xyz[fooz]);
+				glVertex3f(xyz[foox + (i != 0)], xyz[fooy + (i == 0)], xyz[fooz]);
+				glVertex3f(xyz[foox + (i != 0)], xyz[fooy + (i != 1)], xyz[fooz + (i != 2)]);
+				glVertex3f(xyz[foox], xyz[fooy + (i == 2)], xyz[fooz + (i != 2)]);
+				glEnd();
+			}
+	}
+}
+
+void drawTriangle(float *v1, float *v2, float *v3)
+{
+	glBegin(GL_TRIANGLES);
+	glNormal3fv(v1); glVertex3fv(v1);
+	glNormal3fv(v2); glVertex3fv(v2);
+	glNormal3fv(v3); glVertex3fv(v3);
+	glEnd();
 }
 
 void kadlub(void)
@@ -1257,9 +1288,16 @@ void marina(void)
 	}
 }
 
-void yacht(float x, float y, float z)
+void yacht(float navigation[3][100], int i)
 {
-	kadlub();
+	Boat yacht;
+	yacht.setPosition(0.0, 0.0, 0.0);
+
+	glPushMatrix();
+	glTranslatef(navigation[0][i], navigation[1][i], navigation[2][i]);
+	yacht.renderAll();
+	glPopMatrix();
+
 }
 
 void swimming(float navigation[3][100])
@@ -1364,12 +1402,22 @@ void RenderScene(void)
 	//glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 
 	//Rysowanie obiektów:
+
+	/*
 	kadlub();
 	dziob();
 	rufa();
 	maszt(80.0f, 10.0f);
-	akwen();
+	
 	zagiel(80.0f, 10.0f);
+	
+	*/
+
+	//Boat yacht;
+	//yacht.setPosition(0.0, 0.0, 0.0);
+	//yacht.renderAll();
+
+	akwen();
 	marina();
 
 	const float deltaAlpha = 0.0827, deltaL = 32.56, length = 2000.0, height = 800,
@@ -1394,6 +1442,7 @@ void RenderScene(void)
 	navigation[1][99] = 800;
 
 	swimming(navigation);
+	yacht(navigation,time);
 
 	/////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -1593,7 +1642,7 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 	static HGLRC hRC;               // Permenant Rendering context
 	static HDC hDC;                 // Private GDI Device context
 
-	UINT_PTR TimerID;
+	UINT_PTR TimerID=NULL;
 
 	switch (message)
 	{
@@ -1821,6 +1870,9 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 	case WM_TIMER:
 	{
 		//change the position of the boat
+						
+		if (time<99)
+			time++;
 
 					 InvalidateRect(hWnd, NULL, FALSE);
 					 break;
