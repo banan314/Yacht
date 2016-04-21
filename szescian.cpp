@@ -7,6 +7,7 @@
 #include "resource.h"           // About box resource identifiers.
 
 #include "Boat.h"
+#include "Physics.h"
 
 #define glRGB(x, y, z)	glColor3ub((GLubyte)x, (GLubyte)y, (GLubyte)z)
 #define BITMAP_ID 0x4D42		// identyfikator formatu BMP
@@ -29,6 +30,9 @@ GLfloat navigation[3][100];
 GLfloat navAngle[100];
 
 int time = 0;
+float force[3] = { 0, 4.0, 0.2 };
+int deltaTime = 0.08;
+Physics balt17;
 
 static GLsizei lastHeight;
 static GLsizei lastWidth;
@@ -1112,9 +1116,12 @@ void yacht(float navigation[3][100], int i)
 	Boat yacht;
 	yacht.setPosition(0.0, 0.0, 0.0);
 
+	balt17.computeNew(yacht.getMass, force, deltaTime);
+
 	glPushMatrix();
 	
-	glTranslatef(navigation[0][i], navigation[1][i], navigation[2][i]);
+	glTranslatef(navigation[0][i] + balt17.getPos(0),
+		navigation[1][i] + balt17.posNew[1], navigation[2][i] + balt17.posNew[2]);
 	glRotatef(navAngle[i] * 180 / GL_PI, 0.0, 0.0, 1.0);
 	yacht.renderAll();
 	glPopMatrix();
@@ -1453,6 +1460,8 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 	case WM_CREATE:
 		// Store the device context
 		hDC = GetDC(hWnd);
+
+		balt17.velOld[0] = balt17.posOld[0] = balt17.posOld[1] = balt17.posOld[2] = balt17.accelOld[2] = 0.0;
 
 		//set timer for time-out 70ms
 		SetTimer(hWnd, TimerID, 70, NULL);
