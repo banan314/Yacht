@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include "resource.h"           // About box resource identifiers.
 
-#include "shapeUtils.h"
+#include "Boat.h"
 
 #define glRGB(x, y, z)	glColor3ub((GLubyte)x, (GLubyte)y, (GLubyte)z)
 #define BITMAP_ID 0x4D42		// identyfikator formatu BMP
@@ -26,6 +26,9 @@ static GLfloat xTrans, yTrans, zTrans;
 
 //boat constants
 GLfloat navigation[3][100];
+GLfloat navAngle[100];
+
+int time = 0;
 
 static GLsizei lastHeight;
 static GLsizei lastWidth;
@@ -36,7 +39,7 @@ unsigned char*		bitmapData;			// dane tekstury
 unsigned int		texture[2];			// obiekt tekstury
 
 //size
-static GLfloat nRange = 5000.0f;
+static GLfloat nRange = 3000.0f;
 
 // Declaration for Window procedure
 LRESULT CALLBACK WndProc(HWND    hWnd,
@@ -186,202 +189,34 @@ void SetupRC()
 	glColor3f(0.0, 0.0, 0.0);
 }
 
-void kadlub(void)
+void drawCuboid(GLfloat xyz[6])
 {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	{
-		// Parametry wierzcholkow
 
-		GLfloat sa[3] = { -25.0f, 20.0f , 0.0f};
-		GLfloat sb[3] = { 25.0f, 20.0f , 0.0f};
-		GLfloat sc[3] = { 25.0f, 20.0f , 10.0f};
-		GLfloat sd[3] = { -25.0f, 20.0f , 10.0f};
-		GLfloat se[3] = { -25.0f, -20.0f , 0.0f};
-		GLfloat sf[3] = { 25.0f, -20.0f , 0.0f};
-		GLfloat sg[3] = { 25.0f, -20.0f , 10.0f};
-		GLfloat sh[3] = { -25.0f, -20.0f , 10.0f};
-
-
-		// Sciany skladowe
-		glColor3f(1.0f, 0.0f, 0.0f);
-		glBegin(GL_POLYGON);
-		glVertex3fv(sa);
-		glVertex3fv(sb);
-		glVertex3fv(sc);
-		glVertex3fv(sd);
-		glEnd();
-
-		glColor3f(0.0f, 1.0f, 0.0f);
-		glBegin(GL_POLYGON);
-		glVertex3fv(sb);
-		glVertex3fv(sf);
-		glVertex3fv(sg);
-		glVertex3fv(sc);
-		glEnd();
-
-		glColor3f(0.0f, 0.0f, 1.0f);
-		glBegin(GL_POLYGON);
-		glVertex3fv(sf);
-		glVertex3fv(se);
-		glVertex3fv(sh);
-		glVertex3fv(sg);
-		glEnd();
-
-		glColor3f(1.0f, 1.0f, 0.0f);
-		glBegin(GL_POLYGON);
-		glVertex3fv(se);
-		glVertex3fv(sa);
-		glVertex3fv(sd);
-		glVertex3fv(sh);
-		glEnd();
-
-		glColor3f(0.0f, 1.0f, 1.0f);
-		glBegin(GL_POLYGON);
-		glVertex3fv(sd);
-		glVertex3fv(sc);
-		glVertex3fv(sg);
-		glVertex3fv(sh);
-		glEnd();
-
-		glColor3f(1.0f, 0.0f, 1.0f);
-		glBegin(GL_POLYGON);
-		glVertex3fv(sa);
-		glVertex3fv(sb);
-		glVertex3fv(sf);
-		glVertex3fv(se);
-		glEnd();
+		for (int j = 0; j < 2; j++)
+			for (int i = 0; i < 3; i++)
+			{
+				int foox = (i == 0) * j;
+				int fooy = (i == 1) * j + 2;
+				int fooz = (i == 2) * j + 4;
+				glBegin(GL_POLYGON);
+				glVertex3f(xyz[foox], xyz[fooy], xyz[fooz]);
+				glVertex3f(xyz[foox + (i != 0)], xyz[fooy + (i == 0)], xyz[fooz]);
+				glVertex3f(xyz[foox + (i != 0)], xyz[fooy + (i != 1)], xyz[fooz + (i != 2)]);
+				glVertex3f(xyz[foox], xyz[fooy + (i == 2)], xyz[fooz + (i != 2)]);
+				glEnd();
+			}
 	}
 }
 
-void dziob(void)
+void drawTriangle(float *v1, float *v2, float *v3)
 {
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	{
-		// Parametry wierzcholkow
-
-		GLfloat ka[3] = { 25.0f, 20.0f , 0.0f};
-		GLfloat kb[3] = { 40.0f, 0.0f , 0.0f};
-		GLfloat kc[3] = { 25.0f, -20.0f , 0.0f};
-		GLfloat kd[3] = { 25.0f, 20.0f , 10.0f};
-		GLfloat ke[3] = { 40.0f, 0.0f , 10.0f};
-		GLfloat kf[3] = { 25.0f, -20.0f , 10.0f};
-
-
-		// Sciany skladowe
-		//Prawa burta
-		glColor3f(1.0f, 0.0f, 0.0f);
-		glBegin(GL_POLYGON);
-		glVertex3fv(ka);
-		glVertex3fv(kb);
-		glVertex3fv(ke);
-		glVertex3fv(kd);
-		glEnd();
-
-		//Lewa burta
-		glColor3f(0.0f, 1.0f, 0.0f);
-		glBegin(GL_POLYGON);
-		glVertex3fv(kb);
-		glVertex3fv(kc);
-		glVertex3fv(kf);
-		glVertex3fv(ke);
-		glEnd();
-
-		//usun sciane acfd z pokladu/dna
-
-		//Góra
-		glColor3f(0.0f, 0.0f, 1.0f);
-		glBegin(GL_TRIANGLES);
-		glVertex3fv(kd);
-		glVertex3fv(ke);
-		glVertex3fv(kf);
-		glEnd();
-
-		glColor3f(1.0f, 1.0f, 0.0f);
-		glBegin(GL_TRIANGLES);
-		glVertex3fv(ka);
-		glVertex3fv(kb);
-		glVertex3fv(kc);
-		glEnd();
-
-	}
-}
-
-void rufa(void)
-{
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	{
-		// Parametry wierzcholkow
-
-		GLfloat ra[3] = { -25.0f, 20.0f , 0.0f}; //tak samo jak w szescianie
-		GLfloat rb[3] = { -35.0f, 5.0f , 0.0f};
-		GLfloat rc[3] = { -35.0f, 5.0f , 10.0f};
-		GLfloat rd[3] = { -25.0f, 20.0f , 10.0f}; //tak samo jak w szescianie
-		GLfloat re[3] = { -25.0f, -20.0f , 0.0f}; //tak samo jak w szescianie
-		GLfloat rf[3] = { -35.0f, -5.0f , 0.0f};
-		GLfloat rg[3] = { -35.0f, -5.0f , 10.0f};
-		GLfloat rh[3] = { -25.0f, -20.0f , 10.0f}; //tak samo jak w szescianie
-		//GLfloat r[24] = { ra[0], ra[1], ra[2], rb[0], rb[1], rb[2], rc[0], rc[1], rc[2], rd[0], rd[1], rd[2], rf[0], rf[1], rf[2], rg[0], rg[1], rg[2], rh[0], rh[1], rh[2] };
-
-		// Sciany skladowe
-		//Prawa burta
-		glColor3f(1.0f, 0.0f, 0.0f);
-		glBegin(GL_POLYGON);
-		glVertex3fv(ra);
-		glVertex3fv(rb);
-		glVertex3fv(rc);
-		glVertex3fv(rd);
-		glEnd();
-
-		//Lewa burta
-		glColor3f(0.0f, 1.0f, 0.0f);
-		glBegin(GL_POLYGON);
-		glVertex3fv(re);
-		glVertex3fv(rf);
-		glVertex3fv(rg);
-		glVertex3fv(rh);
-		glEnd();
-
-		//usun sciane acfd z pokladu/dna
-
-		//Góra
-		glColor3f(0.0f, 0.0f, 1.0f);
-		glBegin(GL_POLYGON);
-		glVertex3fv(rd);
-		glVertex3fv(rc);
-		glVertex3fv(rg);
-		glVertex3fv(rh);
-		glEnd();
-
-		glColor3f(1.0f, 1.0f, 0.0f);
-		glBegin(GL_POLYGON);
-		glVertex3fv(ra);
-		glVertex3fv(rb);
-		glVertex3fv(rf);
-		glVertex3fv(re);
-		glEnd();
-
-		//Ty³
-		glColor3f(1.0f, 1.0f, 0.0f);
-		glBegin(GL_POLYGON);
-		glVertex3fv(rb);
-		glVertex3fv(rc);
-		glVertex3fv(rg);
-		glVertex3fv(rf);
-		glEnd();
-		
-	}
-}
-
-
-///rysuje czarny maszt dlugi na 8m, na prawo od srodka ukladu wspólrzednych
-void maszt(float masztDlugosc, float masztDolWysokosc)
-{
-	
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	{
-		glColor3f(0.0f, 0.0f, 0.0f);
-		drawCuboid(new GLfloat[6] { 4, 6, -1, 1, masztDolWysokosc, (masztDolWysokosc + masztDlugosc) });
-	}
+	glBegin(GL_TRIANGLES);
+	glNormal3fv(v1); glVertex3fv(v1);
+	glNormal3fv(v2); glVertex3fv(v2);
+	glNormal3fv(v3); glVertex3fv(v3);
+	glEnd();
 }
 
 //rysuje akwen
@@ -391,15 +226,30 @@ void akwen(void)
 	glRectf(-5500, -5500, 5500, 5500);
 }
 
-void zagiel(float masztDlugosc, float masztDolWysokosc)
+void setPath()
 {
-	glColor3f(0.95f, 0.95f, 0.95f);
-	drawTriangle(new float[3] {5.0f, 0.0f, masztDolWysokosc + masztDlugosc / 11.0f},
-		new float[3] {5.0f, 0.0f, (masztDolWysokosc + masztDlugosc)},
-		new float[3] {-20.0f, 0.0f, masztDolWysokosc + masztDlugosc / 11.0f + 1});
-	drawTriangle(new float[3] {5.0f, 0.0f, masztDolWysokosc},
-		new float[3] {7.0f, 0.0f, masztDolWysokosc + masztDlugosc / 16.5f * 13.0f},
-		new float[3] {30.0f, 0.0f, masztDolWysokosc * 2.0f / 3.0f});
+	const float deltaAlpha = 0.0827, deltaL = 32.56, length = 2000.0, height = 800,
+		radius = 400;
+	float alpha = -GL_PI / 2;
+	for (int i = 0; i < 100; i++)
+	{
+		navigation[2][i] = 0;
+		navAngle[i] = 0;
+	}
+	for (int i = 0; i <= 62; i++)
+	{
+		navigation[0][i] = i * deltaL;
+		navigation[1][i] = 0;
+	}
+	for (int i = 63; i < 99; i++)
+	{
+		navigation[0][i] = length + radius * cos(alpha);
+		navigation[1][i] = radius + radius * sin(alpha);
+		alpha += deltaAlpha;
+		navAngle[i] = alpha + GL_PI / 2;
+	}
+	navigation[0][99] = 2000;
+	navigation[1][99] = 800;
 }
 
 void marina(void)
@@ -1257,9 +1107,18 @@ void marina(void)
 	}
 }
 
-void yacht(float x, float y, float z)
+void yacht(float navigation[3][100], int i)
 {
-	kadlub();
+	Boat yacht;
+	yacht.setPosition(0.0, 0.0, 0.0);
+
+	glPushMatrix();
+	
+	glTranslatef(navigation[0][i], navigation[1][i], navigation[2][i]);
+	glRotatef(navAngle[i] * 180 / GL_PI, 0.0, 0.0, 1.0);
+	yacht.renderAll();
+	glPopMatrix();
+
 }
 
 void swimming(float navigation[3][100])
@@ -1364,36 +1223,29 @@ void RenderScene(void)
 	//glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 
 	//Rysowanie obiektów:
+
+	/*
 	kadlub();
 	dziob();
 	rufa();
 	maszt(80.0f, 10.0f);
-	akwen();
+	
 	zagiel(80.0f, 10.0f);
+	
+	*/
+
+	//Boat yacht;
+	//yacht.setPosition(0.0, 0.0, 0.0);
+	//yacht.renderAll();
+
+	akwen();
 	marina();
 
-	const float deltaAlpha = 0.0827, deltaL = 32.56, length = 2000.0, height = 800,
-		radius = 400;
-	float alpha = -GL_PI/2;
-	for (int i = 0; i < 100; i++)
-	{
-		navigation[2][i] = 0;
-	}
-	for (int i = 0; i <= 62; i++)
-	{
-		navigation[0][i] = i * deltaL;
-		navigation[1][i] = 0;
-	}
-	for (int i = 63; i < 99; i++)
-	{
-		navigation[0][i] = length + radius * cos(alpha);
-		navigation[1][i] = radius + radius * sin(alpha);
-		alpha += deltaAlpha;
-	}
-	navigation[0][99] = 2000;
-	navigation[1][99] = 800;
+	//fill navigation array with coordinates of boat swimming
+	setPath();
 
 	swimming(navigation);
+	yacht(navigation,time);
 
 	/////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -1593,7 +1445,7 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 	static HGLRC hRC;               // Permenant Rendering context
 	static HDC hDC;                 // Private GDI Device context
 
-	UINT_PTR TimerID;
+	UINT_PTR TimerID=NULL;
 
 	switch (message)
 	{
@@ -1821,9 +1673,14 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 	case WM_TIMER:
 	{
 		//change the position of the boat
+						
+				if (time < 99)
+					time++;
+				else
+					time = 0;
 
-					 InvalidateRect(hWnd, NULL, FALSE);
-					 break;
+				InvalidateRect(hWnd, NULL, FALSE);
+				break;
 	}
 
 	default:   // Passes it on if unproccessed
