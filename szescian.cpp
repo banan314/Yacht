@@ -6,12 +6,9 @@
 #include <stdio.h>
 #include "resource.h"           // About box resource identifiers.
 
-<<<<<<< HEAD
-=======
 #include "Boat.h"
 #include "Physics.h"
 
->>>>>>> refs/remotes/origin/version-3
 #define glRGB(x, y, z)	glColor3ub((GLubyte)x, (GLubyte)y, (GLubyte)z)
 #define BITMAP_ID 0x4D42		// identyfikator formatu BMP
 #define GL_PI 3.14
@@ -28,17 +25,13 @@ static GLfloat xRot = -90.0f;
 static GLfloat yRot = 0.0f;
 static GLfloat xTrans, yTrans, zTrans;
 
-<<<<<<< HEAD
-=======
 //boat constants
 GLfloat navigation[3][100];
 GLfloat navAngle[100];
 
 int time = 0;
-float force[3] = { 0, 4.0, 0.2 };
-int deltaTime = 0.08;
+float deltaTime = 0.08;
 Physics balt17;
->>>>>>> refs/remotes/origin/version-3
 
 static GLsizei lastHeight;
 static GLsizei lastWidth;
@@ -48,11 +41,8 @@ BITMAPINFOHEADER	bitmapInfoHeader;	// nag³ówek obrazu
 unsigned char*		bitmapData;			// dane tekstury
 unsigned int		texture[2];			// obiekt tekstury
 
-<<<<<<< HEAD
-=======
 //size
 static GLfloat nRange = 3000.0f;
->>>>>>> refs/remotes/origin/version-3
 
 // Declaration for Window procedure
 LRESULT CALLBACK WndProc(HWND    hWnd,
@@ -124,10 +114,6 @@ void calcNormal(float v[3][3], float out[3])
 // Change viewing volume and viewport.  Called when window is resized
 void ChangeSize(GLsizei w, GLsizei h)
 {
-<<<<<<< HEAD
-	GLfloat nRange = 5000.0f;
-=======
->>>>>>> refs/remotes/origin/version-3
 	GLfloat fAspect;
 	// Prevent a divide by zero
 	if (h == 0)
@@ -206,254 +192,33 @@ void SetupRC()
 	glColor3f(0.0, 0.0, 0.0);
 }
 
-<<<<<<< HEAD
-void kadlub(void)
-{
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	{
-		// Parametry wierzcholkow
-
-		GLfloat sa[3] = { -25.0f, 20.0f , 0.0f};
-		GLfloat sb[3] = { 25.0f, 20.0f , 0.0f};
-		GLfloat sc[3] = { 25.0f, 20.0f , 10.0f};
-		GLfloat sd[3] = { -25.0f, 20.0f , 10.0f};
-		GLfloat se[3] = { -25.0f, -20.0f , 0.0f};
-		GLfloat sf[3] = { 25.0f, -20.0f , 0.0f};
-		GLfloat sg[3] = { 25.0f, -20.0f , 10.0f};
-		GLfloat sh[3] = { -25.0f, -20.0f , 10.0f};
-
-
-		// Sciany skladowe
-		glColor3f(1.0f, 0.0f, 0.0f);
-		glBegin(GL_POLYGON);
-		glVertex3fv(sa);
-		glVertex3fv(sb);
-		glVertex3fv(sc);
-		glVertex3fv(sd);
-		glEnd();
-
-		glColor3f(0.0f, 1.0f, 0.0f);
-		glBegin(GL_POLYGON);
-		glVertex3fv(sb);
-		glVertex3fv(sf);
-		glVertex3fv(sg);
-		glVertex3fv(sc);
-		glEnd();
-
-		glColor3f(0.0f, 0.0f, 1.0f);
-		glBegin(GL_POLYGON);
-		glVertex3fv(sf);
-		glVertex3fv(se);
-		glVertex3fv(sh);
-		glVertex3fv(sg);
-		glEnd();
-
-		glColor3f(1.0f, 1.0f, 0.0f);
-		glBegin(GL_POLYGON);
-		glVertex3fv(se);
-		glVertex3fv(sa);
-		glVertex3fv(sd);
-		glVertex3fv(sh);
-		glEnd();
-
-		glColor3f(0.0f, 1.0f, 1.0f);
-		glBegin(GL_POLYGON);
-		glVertex3fv(sd);
-		glVertex3fv(sc);
-		glVertex3fv(sg);
-		glVertex3fv(sh);
-		glEnd();
-
-		glColor3f(1.0f, 0.0f, 1.0f);
-		glBegin(GL_POLYGON);
-		glVertex3fv(sa);
-		glVertex3fv(sb);
-		glVertex3fv(sf);
-		glVertex3fv(se);
-		glEnd();
-	}
-}
-
-void dziob(void)
-{
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	{
-		// Parametry wierzcholkow
-
-		GLfloat ka[3] = { 25.0f, 20.0f , 0.0f};
-		GLfloat kb[3] = { 40.0f, 0.0f , 0.0f};
-		GLfloat kc[3] = { 25.0f, -20.0f , 0.0f};
-		GLfloat kd[3] = { 25.0f, 20.0f , 10.0f};
-		GLfloat ke[3] = { 40.0f, 0.0f , 10.0f};
-		GLfloat kf[3] = { 25.0f, -20.0f , 10.0f};
-
-
-		// Sciany skladowe
-		//Prawa burta
-		glColor3f(1.0f, 0.0f, 0.0f);
-		glBegin(GL_POLYGON);
-		glVertex3fv(ka);
-		glVertex3fv(kb);
-		glVertex3fv(ke);
-		glVertex3fv(kd);
-		glEnd();
-
-		//Lewa burta
-		glColor3f(0.0f, 1.0f, 0.0f);
-		glBegin(GL_POLYGON);
-		glVertex3fv(kb);
-		glVertex3fv(kc);
-		glVertex3fv(kf);
-		glVertex3fv(ke);
-		glEnd();
-
-		//usun sciane acfd z pokladu/dna
-
-		//Góra
-		glColor3f(0.0f, 0.0f, 1.0f);
-		glBegin(GL_TRIANGLES);
-		glVertex3fv(kd);
-		glVertex3fv(ke);
-		glVertex3fv(kf);
-		glEnd();
-
-		glColor3f(1.0f, 1.0f, 0.0f);
-		glBegin(GL_TRIANGLES);
-		glVertex3fv(ka);
-		glVertex3fv(kb);
-		glVertex3fv(kc);
-		glEnd();
-
-	}
-}
-
-=======
->>>>>>> refs/remotes/origin/version-3
 void drawCuboid(GLfloat xyz[6])
 {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	{
 
 		for (int j = 0; j < 2; j++)
-<<<<<<< HEAD
-		for (int i = 0; i < 3; i++)
-		{
-			int foox = (i == 0) * j;
-			int fooy = (i == 1) * j + 2;
-			int fooz = (i == 2) * j + 4;
-			glBegin(GL_POLYGON);
-=======
 			for (int i = 0; i < 3; i++)
 			{
 				int foox = (i == 0) * j;
 				int fooy = (i == 1) * j + 2;
 				int fooz = (i == 2) * j + 4;
 				glBegin(GL_POLYGON);
->>>>>>> refs/remotes/origin/version-3
 				glVertex3f(xyz[foox], xyz[fooy], xyz[fooz]);
 				glVertex3f(xyz[foox + (i != 0)], xyz[fooy + (i == 0)], xyz[fooz]);
 				glVertex3f(xyz[foox + (i != 0)], xyz[fooy + (i != 1)], xyz[fooz + (i != 2)]);
 				glVertex3f(xyz[foox], xyz[fooy + (i == 2)], xyz[fooz + (i != 2)]);
-<<<<<<< HEAD
-			glEnd();
-		}
-	}
-}
-
-void rufa(void)
-{
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	{
-		// Parametry wierzcholkow
-
-		GLfloat ra[3] = { -25.0f, 20.0f , 0.0f}; //tak samo jak w szescianie
-		GLfloat rb[3] = { -35.0f, 5.0f , 0.0f};
-		GLfloat rc[3] = { -35.0f, 5.0f , 10.0f};
-		GLfloat rd[3] = { -25.0f, 20.0f , 10.0f}; //tak samo jak w szescianie
-		GLfloat re[3] = { -25.0f, -20.0f , 0.0f}; //tak samo jak w szescianie
-		GLfloat rf[3] = { -35.0f, -5.0f , 0.0f};
-		GLfloat rg[3] = { -35.0f, -5.0f , 10.0f};
-		GLfloat rh[3] = { -25.0f, -20.0f , 10.0f}; //tak samo jak w szescianie
-		//GLfloat r[24] = { ra[0], ra[1], ra[2], rb[0], rb[1], rb[2], rc[0], rc[1], rc[2], rd[0], rd[1], rd[2], rf[0], rf[1], rf[2], rg[0], rg[1], rg[2], rh[0], rh[1], rh[2] };
-
-		// Sciany skladowe
-		//Prawa burta
-		glColor3f(1.0f, 0.0f, 0.0f);
-		glBegin(GL_POLYGON);
-		glVertex3fv(ra);
-		glVertex3fv(rb);
-		glVertex3fv(rc);
-		glVertex3fv(rd);
-		glEnd();
-
-		//Lewa burta
-		glColor3f(0.0f, 1.0f, 0.0f);
-		glBegin(GL_POLYGON);
-		glVertex3fv(re);
-		glVertex3fv(rf);
-		glVertex3fv(rg);
-		glVertex3fv(rh);
-		glEnd();
-
-		//usun sciane acfd z pokladu/dna
-
-		//Góra
-		glColor3f(0.0f, 0.0f, 1.0f);
-		glBegin(GL_POLYGON);
-		glVertex3fv(rd);
-		glVertex3fv(rc);
-		glVertex3fv(rg);
-		glVertex3fv(rh);
-		glEnd();
-
-		glColor3f(1.0f, 1.0f, 0.0f);
-		glBegin(GL_POLYGON);
-		glVertex3fv(ra);
-		glVertex3fv(rb);
-		glVertex3fv(rf);
-		glVertex3fv(re);
-		glEnd();
-
-		//Ty³
-		glColor3f(1.0f, 1.0f, 0.0f);
-		glBegin(GL_POLYGON);
-		glVertex3fv(rb);
-		glVertex3fv(rc);
-		glVertex3fv(rg);
-		glVertex3fv(rf);
-		glEnd();
-		
-	}
-}
-
-
-///rysuje czarny maszt dlugi na 8m, na prawo od srodka ukladu wspólrzednych
-void maszt(float masztDlugosc, float masztDolWysokosc)
-{
-	
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	{
-		glColor3f(0.0f, 0.0f, 0.0f);
-		drawCuboid(new GLfloat[6] { 4, 6, -1, 1, masztDolWysokosc, (masztDolWysokosc + masztDlugosc) });
-=======
 				glEnd();
 			}
->>>>>>> refs/remotes/origin/version-3
 	}
 }
 
 void drawTriangle(float *v1, float *v2, float *v3)
 {
 	glBegin(GL_TRIANGLES);
-<<<<<<< HEAD
-		glNormal3fv(v1); glVertex3fv(v1);
-		glNormal3fv(v2); glVertex3fv(v2);
-		glNormal3fv(v3); glVertex3fv(v3);
-=======
 	glNormal3fv(v1); glVertex3fv(v1);
 	glNormal3fv(v2); glVertex3fv(v2);
 	glNormal3fv(v3); glVertex3fv(v3);
->>>>>>> refs/remotes/origin/version-3
 	glEnd();
 }
 
@@ -464,17 +229,6 @@ void akwen(void)
 	glRectf(-5500, -5500, 5500, 5500);
 }
 
-<<<<<<< HEAD
-void zagiel(float masztDlugosc, float masztDolWysokosc)
-{
-	glColor3f(0.95f, 0.95f, 0.95f);
-	drawTriangle(new float[3] {5.0f, 0.0f, masztDolWysokosc + masztDlugosc / 11.0f},
-		new float[3] {5.0f, 0.0f, (masztDolWysokosc + masztDlugosc)},
-		new float[3] {-20.0f, 0.0f, masztDolWysokosc + masztDlugosc / 11.0f + 1});
-	drawTriangle(new float[3] {5.0f, 0.0f, masztDolWysokosc},
-		new float[3] {7.0f, 0.0f, masztDolWysokosc + masztDlugosc / 16.5f * 13.0f},
-		new float[3] {30.0f, 0.0f, masztDolWysokosc * 2.0f / 3.0f});
-=======
 void setPath()
 {
 	const float deltaAlpha = 0.0827, deltaL = 32.56, length = 2000.0, height = 800,
@@ -499,7 +253,6 @@ void setPath()
 	}
 	navigation[0][99] = 2000;
 	navigation[1][99] = 800;
->>>>>>> refs/remotes/origin/version-3
 }
 
 void marina(void)
@@ -1357,27 +1110,21 @@ void marina(void)
 	}
 }
 
-<<<<<<< HEAD
-void yacht(float x, float y, float z)
-{
-	kadlub();
-=======
 void yacht(float navigation[3][100], int i)
 {
 	Boat yacht;
 	yacht.setPosition(0.0, 0.0, 0.0);
 
-	balt17.computeNew(yacht.getMass, force, deltaTime);
+	balt17.computeNew(yacht.getMass(), deltaTime);
 
 	glPushMatrix();
 	
-	glTranslatef(navigation[0][i] + balt17.getPos(0),
-		navigation[1][i] + balt17.posNew[1], navigation[2][i] + balt17.posNew[2]);
+	glTranslatef(navigation[0][i] + balt17.getPos()[0],
+		navigation[1][i] + balt17.getPos()[1], navigation[2][i] + balt17.getPos()[2]);
 	glRotatef(navAngle[i] * 180 / GL_PI, 0.0, 0.0, 1.0);
 	yacht.renderAll();
 	glPopMatrix();
 
->>>>>>> refs/remotes/origin/version-3
 }
 
 void swimming(float navigation[3][100])
@@ -1482,44 +1229,12 @@ void RenderScene(void)
 	//glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 
 	//Rysowanie obiektów:
-<<<<<<< HEAD
-=======
 
 	/*
->>>>>>> refs/remotes/origin/version-3
 	kadlub();
 	dziob();
 	rufa();
 	maszt(80.0f, 10.0f);
-<<<<<<< HEAD
-	//akwen();
-	zagiel(80.0f, 10.0f);
-	marina();
-
-	GLfloat navigation[3][100];
-	const float deltaAlpha = 0.0827, deltaL = 32.56, length = 2000.0, height = 800,
-		radius = 400;
-	float alpha = -GL_PI/2;
-	for (int i = 0; i < 100; i++)
-	{
-		navigation[2][i] = 0;
-	}
-	for (int i = 0; i <= 62; i++)
-	{
-		navigation[0][i] = i * deltaL;
-		navigation[1][i] = 0;
-	}
-	for (int i = 63; i < 99; i++)
-	{
-		navigation[0][i] = length + radius * cos(alpha);
-		navigation[1][i] = radius + radius * sin(alpha);
-		alpha += deltaAlpha;
-	}
-	navigation[0][99] = 2000;
-	navigation[1][99] = 800;
-
-	swimming(navigation);
-=======
 	
 	zagiel(80.0f, 10.0f);
 	
@@ -1537,7 +1252,6 @@ void RenderScene(void)
 
 	swimming(navigation);
 	yacht(navigation,time);
->>>>>>> refs/remotes/origin/version-3
 
 	/////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -1737,11 +1451,8 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 	static HGLRC hRC;               // Permenant Rendering context
 	static HDC hDC;                 // Private GDI Device context
 
-<<<<<<< HEAD
-=======
 	UINT_PTR TimerID=NULL;
 
->>>>>>> refs/remotes/origin/version-3
 	switch (message)
 	{
 		// Window creation, setup for OpenGL
@@ -1749,14 +1460,14 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 		// Store the device context
 		hDC = GetDC(hWnd);
 
-<<<<<<< HEAD
-=======
-		balt17.velOld[0] = balt17.posOld[0] = balt17.posOld[1] = balt17.posOld[2] = balt17.accelOld[2] = 0.0;
+		balt17.setPos(new float[3] {0.0, 0.0, 0.0});
+		balt17.setVel(new float[3] {0.0, 0.0, 0.0});
+		balt17.setAccel(new float[3] {0.0, 0.0, 0.0});
+		balt17.setForce(new float[3] { 0.0f, 4.0f, 0.2f });
 
 		//set timer for time-out 70ms
 		SetTimer(hWnd, TimerID, 70, NULL);
 		
->>>>>>> refs/remotes/origin/version-3
 		// Select the pixel format
 		SetDCPixelFormat(hDC);
 
@@ -1821,10 +1532,7 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 		// Tell the application to terminate after the window
 		// is gone.
 		PostQuitMessage(0);
-<<<<<<< HEAD
-=======
 		KillTimer(hWnd, TimerID);
->>>>>>> refs/remotes/origin/version-3
 		break;
 
 		// Window is resized.
@@ -1908,17 +1616,6 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 					   if (wParam == VK_RIGHT || wParam == VK_NUMPAD6)
 						   yRot += 5.0f;
 
-<<<<<<< HEAD
-					   if (wParam == 'd')
-						   xTrans += 3.0f;
-					   if (wParam == 'a')
-						   xTrans -= 3.0f;
-					   if (wParam == 'w')
-						   yTrans += 3.0f;
-					   if (wParam == 's')
-						   yTrans -= 3.0f;
-					   
-=======
 					   if (wParam == 0x41 + 'd' - 'a')
 						   xTrans += 10.0f;
 					   if (wParam == 0x41)
@@ -1955,7 +1652,6 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 							InvalidateRect(hWnd, NULL, FALSE);
 							break;
 					   }
->>>>>>> refs/remotes/origin/version-3
 
 					   xRot = (const int)xRot % 360;
 					   yRot = (const int)yRot % 360;
@@ -1985,8 +1681,6 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 	}
 		break;
 
-<<<<<<< HEAD
-=======
 	case WM_TIMER:
 	{
 		//change the position of the boat
@@ -1999,7 +1693,6 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 				InvalidateRect(hWnd, NULL, FALSE);
 				break;
 	}
->>>>>>> refs/remotes/origin/version-3
 
 	default:   // Passes it on if unproccessed
 		return (DefWindowProc(hWnd, message, wParam, lParam));

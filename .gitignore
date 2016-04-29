@@ -245,3 +245,8 @@ pip-log.txt
 *.out
 *.synctex.gz
 *.bib
+
+# resource
+*.H
+*.APS
+*.RC
