@@ -5,20 +5,24 @@
 #include <gl\glu.h>             // GLU library
 #include "resource.h"           // About box resource identifiers.
 
-#include "shapeUtils.h"
+//#include "shapeUtils.h"
 
 Boat::Boat()
 {
+	mass = 500.0; //kg
 }
 
 void Boat::renderAll()
 {
 	kadlub();
 	dziob();
-	maszt();
+	maszt(80.0f, 10.0f);
 	rufa();
-	zagiel();
+	zagiel(80.0f, 10.0f);
 }
+
+void drawCuboid(GLfloat[6]);
+void drawTriangle(float *, float *, float *);
 
 void Boat::kadlub()
 {
@@ -227,6 +231,20 @@ void Boat::zagiel(float masztDlugosc, float masztDolWysokosc)
 		new float[3] { posX + (30.0f), posY + ( 0.0f),posZ +  ( masztDolWysokosc * 2.0f / 3.0f)});
 }
 
+void Boat::setPosition(float x, float y)
+{
+	posX = x;
+	posY = y;
+}
+
+void Boat::setPosition(float x, float y, float z)
+{
+	posX = x;
+	posY = y;
+	posZ = z;
+}
+
 Boat::~Boat()
 {
 }
+

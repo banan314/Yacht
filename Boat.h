@@ -3,6 +3,7 @@ class Boat
 {
 private:
 	float posX, posY, posZ;
+	float mass;
 protected:
 	void kadlub();
 	void dziob();
@@ -11,6 +12,7 @@ protected:
 	void zagiel(float, float);
 public:
 	Boat();
+	float getMass() { return mass; }
 	void setPosition(float, float);
 	void setPosition(float, float, float);
 	void renderAll();
