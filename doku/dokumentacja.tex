@@ -1,0 +1,27 @@
+\documentclass[11pt,a4paper]{article}
+
+\include{lib/pack}
+
+\newcommand{\nazwacwiczenia}{Awesome title}
+\newcommand{\datacwiczenia}{2016}
+\newcommand{\modul}{Grafika komputerowa}
+
+\begin{document}
+	\input{lib/title}
+	\input{lab/lab1}
+	\newcommand{\signItem}[1]{\item[\textbf{#1}]}
+	\section{Sterowanie klawiszami}
+	\begin{itemize}
+		\signItem{4} rotate left
+		\signItem{8} rotate up
+		\signItem{6} rotate right
+		\signItem{2} rotate down
+		\signItem{-} zoom out
+		\signItem{+} zoom in
+		\signItem{a} translate left
+		\signItem{w} translate forward
+		\signItem{d} translate right
+		\signItem{s} translate	backward
+	\end{itemize}
+	
+\end{document}
