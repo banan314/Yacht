@@ -1,7 +1,10 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <windows.h>            // Window defines
+#include <GL\glew.h>
+#include <GL\freeglut.h>
 #include <gl\gl.h>              // OpenGL
 #include <gl\glu.h>             // GLU library
+#pragma 
 
 #include <math.h>				// Define for sqrt
 #include <stdio.h>
@@ -11,6 +14,8 @@
 #include "Physics.h"
 #include "shapeUtils.h"
 #include "Marina.h"
+
+#pragma region globals
 
 #define glRGB(x, y, z)	glColor3ub((GLubyte)x, (GLubyte)y, (GLubyte)z)
 #define BITMAP_ID 0x4D42		// identyfikator formatu BMP
@@ -48,6 +53,9 @@ unsigned int		texture[2];			// obiekt tekstury
 //size
 static GLfloat nRange = 3000.0f;
 
+#pragma endregion globals
+
+#pragma region windowsUtils
 // Declaration for Window procedure
 LRESULT CALLBACK WndProc(HWND    hWnd,
 	UINT    message,
@@ -144,7 +152,7 @@ void ChangeSize(GLsizei w, GLsizei h)
 	/*
 	gluPerspective(60.0f,fAspect,1.0,400);
 	*/
-
+#pragma endregion windowsUtils
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
@@ -257,7 +265,7 @@ void swimming(float navigation[3][100])
 	glEnd();
 }
 
-void swiatlo()
+void light()
 {
 	/*glLightf(GL_LIGHT1, GL_SPOT_CUTOFF(1),2);
 	glEnable(GL_LIGHTING);
@@ -446,7 +454,7 @@ void SetDCPixelFormat(HDC hDC)
 	// Set the pixel format for the device context
 	SetPixelFormat(hDC, nPixelFormat, &pfd);
 }
-
+#pragma region palette
 
 
 // If necessary, creates a 3-3-2 palette for the device context listed.
@@ -517,7 +525,7 @@ HPALETTE GetOpenGLPalette(HDC hDC)
 
 	// Free the memory used for the logical palette structure
 	free(pPal);
-
+#pragma endregion palette
 	// Return the handle to the new palette
 	return hRetPal;
 }
@@ -856,7 +864,7 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 
 	return (0L);
 }
-
+#pragma region dialog
 
 
 
@@ -873,21 +881,21 @@ BOOL APIENTRY AboutDlgProc(HWND hDlg, UINT message, UINT wParam, LONG lParam)
 						  GLenum glError;
 
 						  // glGetString demo
-						  SetDlgItemText(hDlg, IDC_OPENGL_VENDOR, (LPCWSTR)glGetString(GL_VENDOR));
-						  SetDlgItemText(hDlg, IDC_OPENGL_RENDERER, (LPCWSTR)glGetString(GL_RENDERER));
-						  SetDlgItemText(hDlg, IDC_OPENGL_VERSION, (LPCWSTR)glGetString(GL_VERSION));
-						  SetDlgItemText(hDlg, IDC_OPENGL_EXTENSIONS, (LPCWSTR)glGetString(GL_EXTENSIONS));
+						  SetDlgItemText(hDlg, IDC_OPENGL_VENDOR, (LPCSTR)glGetString(GL_VENDOR));
+						  SetDlgItemText(hDlg, IDC_OPENGL_RENDERER, (LPCSTR)glGetString(GL_RENDERER));
+						  SetDlgItemText(hDlg, IDC_OPENGL_VERSION, (LPCSTR)glGetString(GL_VERSION));
+						  SetDlgItemText(hDlg, IDC_OPENGL_EXTENSIONS, (LPCSTR)glGetString(GL_EXTENSIONS));
 
 						  // gluGetString demo
-						  SetDlgItemText(hDlg, IDC_GLU_VERSION, (LPCWSTR)gluGetString(GLU_VERSION));
-						  SetDlgItemText(hDlg, IDC_GLU_EXTENSIONS, (LPCWSTR)gluGetString(GLU_EXTENSIONS));
+						  SetDlgItemText(hDlg, IDC_GLU_VERSION, (LPCSTR)gluGetString(GLU_VERSION));
+						  SetDlgItemText(hDlg, IDC_GLU_EXTENSIONS, (LPCSTR)gluGetString(GLU_EXTENSIONS));
 
 
 						  // Display any recent error messages
 						  i = 0;
 						  do {
 							  glError = glGetError();
-							  SetDlgItemText(hDlg, IDC_ERROR1 + i, (LPCWSTR)gluErrorString(glError));
+							  SetDlgItemText(hDlg, IDC_ERROR1 + i, (LPCSTR)gluErrorString(glError));
 							  i++;
 						  } while (i < 6 && glError != GL_NO_ERROR);
 
@@ -913,3 +921,4 @@ BOOL APIENTRY AboutDlgProc(HWND hDlg, UINT message, UINT wParam, LONG lParam)
 
 	return FALSE;
 }
+#pragma endregion dialog
