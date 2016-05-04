@@ -152,11 +152,11 @@ void ChangeSize(GLsizei w, GLsizei h)
 	/*
 	gluPerspective(60.0f,fAspect,1.0,400);
 	*/
-#pragma endregion windowsUtils
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
-
+#pragma endregion windowsUtils
 
 
 // This function does any needed initialization on the rendering
@@ -267,45 +267,21 @@ void swimming(float navigation[3][100])
 
 void light()
 {
-	/*glLightf(GL_LIGHT1, GL_SPOT_CUTOFF(1),2);
-	glEnable(GL_LIGHTING);
-	glDisable(GL_LIGHTING);        */
-	float red[] = { 1.0f, 0.0f, 0.0f };
-	float blue[] = { 0.0f, 0.0f, 1.0f };
-	float green[] = { 0.0f, 1.0f, 0.0f };
+	//glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 180);
+	//glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, new GLfloat[3] {0.5f, 0.5f, -0.3f});
 
-	glBegin(GL_POLYGON);
-	glColor3fv(red);
-	glVertex3f(0.0f, 1.0f, 0.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f);
-
-	glColor3fv(green);
-	glVertex3f(5.0f, 0.0f, 0.0f);
-	glVertex3f(5.0f, 1.0f, 0.0f);
-
-	glEnd();
-	glBegin(GL_POLYGON);
-	glColor3fv(green);
-	glVertex3f(5.0f, 0.0f, 0.0f);
-	glVertex3f(5.0f, 1.0f, 0.0f);
-
-	glColor3fv(blue);
-	glVertex3f(10.0f, 1.0f, 0.0f);
-	glVertex3f(10.0f, 0.0f, 0.0f);
-
-	glEnd();
-
-	GLfloat lightColor0[] = { 0.0f, 0.5f, 0.0f, 1.0f };
-	GLfloat lightPos0[] = { 10.0f, 5.0f, -9.0f, 1.0f };
-	GLfloat lightPos1[] = { 10.0f, 10.0f, -12.0f, 0.0f };
+	GLfloat lightColor0[] = { 0.01f, 0.5f, 0.1f, 0.7f };
+	GLfloat lightColor1[] = { 0.01f, 0.1f, 0.5f, 0.7f };
+	GLfloat lightPos0[] = { 100.0f, 50.0f, -9.0f, 1.0f };
+	GLfloat lightPos1[] = { 100.0f, 100.0f, -12.0f};
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, lightColor0);
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, lightColor1);
 	glLightfv(GL_LIGHT1, GL_POSITION, lightPos0);
+	glLightfv(GL_LIGHT1, GL_POSITION, lightPos1);
 
-	glPushMatrix();
-	glColor3f(1.0, 1.0, 1.0);
-	glTranslatef(lightPos1[0], lightPos1[1], lightPos1[2]);
-	glutWireSphere(3.0, 100, 100);
-	glPopMatrix();
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT1);
+	//glEnable(GL_LIGHT0);
 }
 
 // LoadBitmapFile
@@ -397,6 +373,12 @@ void RenderScene(void)
 	//Sposób na odróŸnienie "przedniej" i "tylniej" œciany wielok¹ta:
 	glPolygonMode(GL_BACK, GL_LINE);
 
+	//Materials
+	glMaterialfv(GL_FRONT, GL_SPECULAR, new GLfloat[4] {1.0, 1.0, 1.0, 1.0});
+
+	//light
+	light();
+
 	//Uzyskanie siatki:
 	//glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 
@@ -454,9 +436,9 @@ void SetDCPixelFormat(HDC hDC)
 	// Set the pixel format for the device context
 	SetPixelFormat(hDC, nPixelFormat, &pfd);
 }
+
+
 #pragma region palette
-
-
 // If necessary, creates a 3-3-2 palette for the device context listed.
 HPALETTE GetOpenGLPalette(HDC hDC)
 {
@@ -525,11 +507,11 @@ HPALETTE GetOpenGLPalette(HDC hDC)
 
 	// Free the memory used for the logical palette structure
 	free(pPal);
-#pragma endregion palette
+
 	// Return the handle to the new palette
 	return hRetPal;
 }
-
+#pragma endregion palette
 
 // Entry point of all Windows programs
 int APIENTRY WinMain(HINSTANCE       hInst,
@@ -864,10 +846,10 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 
 	return (0L);
 }
+
+
+
 #pragma region dialog
-
-
-
 // Dialog procedure.
 BOOL APIENTRY AboutDlgProc(HWND hDlg, UINT message, UINT wParam, LONG lParam)
 {
