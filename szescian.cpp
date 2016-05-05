@@ -6,6 +6,8 @@
 #include <gl\glu.h>             // GLU library
 #pragma 
 
+#include <AntTweakBar.h>
+
 #include <math.h>				// Define for sqrt
 #include <stdio.h>
 #include "resource.h"           // About box resource identifiers.
@@ -661,6 +663,14 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 
 		// ustalenie sposobu mieszania tekstury z t³em
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+		TwInit(TW_OPENGL, NULL);
+
+		TwBar *myBar;
+		myBar = TwNewBar("NameOfMyTweakBar");
+
+		TwAddVarRW(myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &nRange, "min=50 max=4000");
+
 		break;
 
 		// Window is being destroyed, cleanup
@@ -677,6 +687,7 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 		// is gone.
 		PostQuitMessage(0);
 		KillTimer(hWnd, TimerID);
+		TwTerminate();
 		break;
 
 		// Window is resized.
@@ -693,6 +704,7 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 	{
 					 // Call OpenGL drawing code
 					 RenderScene();
+					 TwDraw();
 
 					 SwapBuffers(hDC);
 
