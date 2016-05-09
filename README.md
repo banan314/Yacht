@@ -11,6 +11,13 @@ color-go-away-when-i-enable-lighting-in-opengl -> use material.
 #Adding additional libraries
 To add freeglut or AntTweakBar, go to *Manage NuGet extensions* and install the extension. Afterwards, you might have to restart Visual Studio.
 
+#AntTweakBar code
+Where:
+A. header: #include <AntTweakBar.h>
+B. **WndProc** in *WM_CREATE*: AntTweakBar initialization, redirection of GLUT events to AntTweakBar, AntTweakBar routines
+C. **WndProc** in *WM_DESTROY*: terminiation of AntTweakBar
+D. **WndProc** in *WM_PAINT*: TwDraw();
+
 [1] https://msdn.microsoft.com/en-us/library/ee855621.aspx
 [2] https://www.youtube.com/watch?v=8p76pJsUP44
 [3] http://stackoverflow.com/questions/8494942/why-does-my-color-go-away-when-i-enable-lighting-in-opengl

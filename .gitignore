@@ -247,3 +247,5 @@ pip-log.txt
 *.out
 *.synctex.gz
 *.bib
+glew.h
+glew32s.lib

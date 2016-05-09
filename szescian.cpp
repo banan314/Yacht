@@ -1,6 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <windows.h>            // Window defines
-#include <GL\glew.h>
+#include "glew.h"
 #include <GL\freeglut.h>
 #include <gl\gl.h>              // OpenGL
 #include <gl\glu.h>             // GLU library
@@ -625,7 +625,7 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 
 		//set timer for time-out 70ms
 		SetTimer(hWnd, TimerID, 70, NULL);
-		
+
 		// Select the pixel format
 		SetDCPixelFormat(hDC);
 
@@ -677,11 +677,30 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
 		TwInit(TW_OPENGL, NULL);
+		RECT rc;
+		GetWindowRect(hWnd, &rc);
+		TwWindowSize(rc.right - rc.left, rc.top - rc.bottom);
 
+		// after GLUT initialization
+		// directly redirect GLUT events to AntTweakBar
+		glutMouseFunc((GLUTmousebuttonfun)TwEventMouseButtonGLUT);
+		glutMotionFunc((GLUTmousemotionfun)TwEventMouseMotionGLUT);
+		glutPassiveMotionFunc((GLUTmousemotionfun)TwEventMouseMotionGLUT); // same as MouseMotion
+		glutKeyboardFunc((GLUTkeyboardfun)TwEventKeyboardGLUT);
+		glutSpecialFunc((GLUTspecialfun)TwEventSpecialGLUT);
+
+		// send the ''glutGetModifers'' function pointer to AntTweakBar
+		TwGLUTModifiersFunc(glutGetModifiers);
+
+		//------------------------------------------
+		//AntTweakBar routines
+		//------------------------------------------
 		TwBar *myBar;
-		myBar = TwNewBar("NameOfMyTweakBar");
+		myBar = TwNewBar("viewRangeBar");
 
-		TwAddVarRW(myBar, "NameOfMyVariable", TW_TYPE_FLOAT, &nRange, "min=50 max=4000");
+		TwAddVarRW(myBar, "viewRange", TW_TYPE_FLOAT, &nRange, "min=50 max=4000");
+		//------------------------------------------
+
 
 		break;
 
