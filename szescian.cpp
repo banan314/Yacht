@@ -1,10 +1,11 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <windows.h>            // Window defines
-#include "glew.h"
+#include <gl\glew.h>
 #include <GL\freeglut.h>
 #include <gl\gl.h>              // OpenGL
 #include <gl\glu.h>             // GLU library
 #define LS (LPCSTR)
+#include <CommCtrl.h>
 
 #include <AntTweakBar.h>
 
@@ -295,7 +296,7 @@ unsigned char *LoadBitmapFile(char *filename, BITMAPINFOHEADER *bitmapInfoHeader
 	FILE *filePtr;							// wskaünik pozycji pliku
 	BITMAPFILEHEADER	bitmapFileHeader;		// nag≥Ûwek pliku
 	unsigned char		*bitmapImage;			// dane obrazu
-	unsigned int					imageIdx = 0;		// licznik pikseli
+	unsigned int		imageIdx = 0;		// licznik pikseli
 	unsigned char		tempRGB;				// zmienna zamiany sk≥adowych
 
 	// otwiera plik w trybie "read binary"
@@ -567,6 +568,27 @@ int APIENTRY WinMain(HINSTANCE       hInst,
 	if (hWnd == NULL)
 		return FALSE;
 
+	//https://codingmisadventures.wordpress.com/2009/03/10/retrieving-command-line-parameters-from-winmain-in-win32/
+	LPWSTR *szArgList;
+	int *argCount = new int;
+
+	szArgList = CommandLineToArgvW((LPCWSTR)GetCommandLine(), argCount);
+	if (szArgList == NULL)
+	{
+		MessageBox(hWnd, (LPCSTR)"Unable to parse command line", (LPCSTR)"Error", MB_OK);
+		return 10;
+	}
+	glutInit(argCount, (char**)szArgList);
+	
+	// Very important!  This initializes the entry points in the OpenGL driver so we can 
+	// call all the functions in the API.
+	GLenum err = glewInit();
+	if (GLEW_OK != err) {
+		fprintf(stderr, "GLEW error");
+		return 1;
+	}
+
+	LocalFree(szArgList);
 
 	// Display the window
 	ShowWindow(hWnd, SW_SHOW);
@@ -584,21 +606,6 @@ int APIENTRY WinMain(HINSTANCE       hInst,
 	return msg.wParam;
 }
 
-
-//LRESULT CALLBACK GUIWindows(HWND    hWnd,
-//	UINT    message,
-//	WPARAM  wParam,
-//	LPARAM  lParam)
-//{
-//	switch (message)
-//	{
-//	case WM_CREATE:
-//		MessageBox(hWnd, LS"You created", LS"A window, class!", MB_OK);
-//	}
-//
-//	return 0;
-//}
-
 // Window procedure, handles all messages for this program
 LRESULT CALLBACK WndProc(HWND    hWnd,
 	UINT    message,
@@ -609,6 +616,11 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 	static HDC hDC;                 // Private GDI Device context
 
 	UINT_PTR TimerID=NULL;
+
+	if (TwEventWin(hWnd, message, wParam, lParam)) // send event message to AntTweakBar
+		return 0; // event has been handled by AntTweakBar
+	// else process the event message
+	// ...
 
 	switch (message)
 	{
@@ -676,22 +688,12 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 		// ustalenie sposobu mieszania tekstury z t≥em
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
+		//AntTweakBar initialization
 		TwInit(TW_OPENGL, NULL);
 		RECT rc;
 		GetWindowRect(hWnd, &rc);
 		TwWindowSize(rc.right - rc.left, rc.top - rc.bottom);
-
-		// after GLUT initialization
-		// directly redirect GLUT events to AntTweakBar
-		glutMouseFunc((GLUTmousebuttonfun)TwEventMouseButtonGLUT);
-		glutMotionFunc((GLUTmousemotionfun)TwEventMouseMotionGLUT);
-		glutPassiveMotionFunc((GLUTmousemotionfun)TwEventMouseMotionGLUT); // same as MouseMotion
-		glutKeyboardFunc((GLUTkeyboardfun)TwEventKeyboardGLUT);
-		glutSpecialFunc((GLUTspecialfun)TwEventSpecialGLUT);
-
-		// send the ''glutGetModifers'' function pointer to AntTweakBar
-		TwGLUTModifiersFunc(glutGetModifiers);
-
+		
 		//------------------------------------------
 		//AntTweakBar routines
 		//------------------------------------------
