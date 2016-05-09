@@ -4,7 +4,7 @@
 #include <GL\freeglut.h>
 #include <gl\gl.h>              // OpenGL
 #include <gl\glu.h>             // GLU library
-#pragma 
+#define LS (LPCSTR)
 
 #include <AntTweakBar.h>
 
@@ -295,7 +295,7 @@ unsigned char *LoadBitmapFile(char *filename, BITMAPINFOHEADER *bitmapInfoHeader
 	FILE *filePtr;							// wskaünik pozycji pliku
 	BITMAPFILEHEADER	bitmapFileHeader;		// nag≥Ûwek pliku
 	unsigned char		*bitmapImage;			// dane obrazu
-	int					imageIdx = 0;		// licznik pikseli
+	unsigned int					imageIdx = 0;		// licznik pikseli
 	unsigned char		tempRGB;				// zmienna zamiany sk≥adowych
 
 	// otwiera plik w trybie "read binary"
@@ -521,7 +521,7 @@ int APIENTRY WinMain(HINSTANCE       hInst,
 	LPSTR           lpCmdLine,
 	int                     nCmdShow)
 {
-	MSG                     msg;            // Windows message structure
+	MSG             msg;            // Windows message structure
 	WNDCLASS        wc;                     // Windows class structure
 	HWND            hWnd;           // Storeage for window handle
 
@@ -585,7 +585,19 @@ int APIENTRY WinMain(HINSTANCE       hInst,
 }
 
 
-
+//LRESULT CALLBACK GUIWindows(HWND    hWnd,
+//	UINT    message,
+//	WPARAM  wParam,
+//	LPARAM  lParam)
+//{
+//	switch (message)
+//	{
+//	case WM_CREATE:
+//		MessageBox(hWnd, LS"You created", LS"A window, class!", MB_OK);
+//	}
+//
+//	return 0;
+//}
 
 // Window procedure, handles all messages for this program
 LRESULT CALLBACK WndProc(HWND    hWnd,
