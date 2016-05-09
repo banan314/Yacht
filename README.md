@@ -18,6 +18,9 @@ B. **WndProc** in *WM_CREATE*: AntTweakBar initialization, redirection of GLUT e
 C. **WndProc** in *WM_DESTROY*: terminiation of AntTweakBar
 D. **WndProc** in *WM_PAINT*: TwDraw();
 
+##GLUT code
+**APIENTRY WinMain**: glutInit and glewInit
+
 [1] https://msdn.microsoft.com/en-us/library/ee855621.aspx
 [2] https://www.youtube.com/watch?v=8p76pJsUP44
 [3] http://stackoverflow.com/questions/8494942/why-does-my-color-go-away-when-i-enable-lighting-in-opengl
