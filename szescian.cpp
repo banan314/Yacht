@@ -18,6 +18,8 @@
 #include "shapeUtils.h"
 #include "Marina.h"
 
+#include <array>
+
 #pragma region globals
 
 #define glRGB(x, y, z)	glColor3ub((GLubyte)x, (GLubyte)y, (GLubyte)z)
@@ -37,8 +39,8 @@ static GLfloat yRot = 0.0f;
 static GLfloat xTrans, yTrans, zTrans;
 
 //boat constants
-GLfloat navigation[3][100];
-GLfloat navAngle[100];
+std::array<GLfloat, 200> navigation[3];
+GLfloat navAngle[200];
 Physics balt17; //yacht
 
 //time constants
@@ -168,37 +170,37 @@ void ChangeSize(GLsizei w, GLsizei h)
 void SetupRC()
 {
 	// Light values and coordinates
-	//GLfloat  ambientLight[] = { 0.3f, 0.3f, 0.3f, 1.0f };
-	//GLfloat  diffuseLight[] = { 0.7f, 0.7f, 0.7f, 1.0f };
-	//GLfloat  specular[] = { 1.0f, 1.0f, 1.0f, 1.0f};
-	//GLfloat	 lightPos[] = { 0.0f, 150.0f, 150.0f, 1.0f };
-	//GLfloat  specref[] =  { 1.0f, 1.0f, 1.0f, 1.0f };
+	GLfloat  ambientLight[] = { 0.3f, 0.3f, 0.3f, 1.0f };
+	GLfloat  diffuseLight[] = { 0.7f, 0.7f, 0.7f, 1.0f };
+	GLfloat  specular[] = { 1.0f, 1.0f, 1.0f, 1.0f};
+	GLfloat	 lightPos[] = { 0.0f, 150.0f, 150.0f, 1.0f };
+	GLfloat  specref[] =  { 1.0f, 1.0f, 1.0f, 1.0f };
 
 
 	glEnable(GL_DEPTH_TEST);	// Hidden surface removal
 	glFrontFace(GL_CCW);		// Counter clock-wise polygons face out
-	//glEnable(GL_CULL_FACE);		// Do not calculate inside of jet
+	glEnable(GL_CULL_FACE);		// Do not calculate inside of jet
 
 	// Enable lighting
-	//glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHTING);
 
 	// Setup and enable light 0
-	//glLightfv(GL_LIGHT0,GL_AMBIENT,ambientLight);
-	//glLightfv(GL_LIGHT0,GL_DIFFUSE,diffuseLight);
-	//glLightfv(GL_LIGHT0,GL_SPECULAR,specular);
-	//glLightfv(GL_LIGHT0,GL_POSITION,lightPos);
-	//glEnable(GL_LIGHT0);
+	glLightfv(GL_LIGHT0,GL_AMBIENT,ambientLight);
+	glLightfv(GL_LIGHT0,GL_DIFFUSE,diffuseLight);
+	glLightfv(GL_LIGHT0,GL_SPECULAR,specular);
+	glLightfv(GL_LIGHT0,GL_POSITION,lightPos);
+	glEnable(GL_LIGHT0);
 
 	// Enable color tracking
-	//glEnable(GL_COLOR_MATERIAL);
+	glEnable(GL_COLOR_MATERIAL);
 
 	// Set Material properties to follow glColor values
-	//glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 
 	// All materials hereafter have full specular reflectivity
 	// with a high shine
-	//glMaterialfv(GL_FRONT, GL_SPECULAR,specref);
-	//glMateriali(GL_FRONT,GL_SHININESS,128);
+	glMaterialfv(GL_FRONT, GL_SPECULAR,specref);
+	glMateriali(GL_FRONT,GL_SHININESS,128);
 
 
 	// White background
@@ -238,11 +240,20 @@ void setPath()
 	}
 	navigation[0][99] = 2000;
 	navigation[1][99] = 800;
+	
+	//symmetry about a centre point
+	const float centrePoint[3] = { 1000, 400, 0 };
+	for (int i = 100; i < 200; i++)
+	{
+		for (int j = 0; j < 3; j++)
+			navigation[j][i] = 2*centrePoint[j] - navigation[j][i - 100];
+		navAngle[i] = navAngle[i - 100];
+	}
 }
 
 
-
-void yacht(float navigation[3][100], int i)
+template<size_t n>
+void yacht(std::array<GLfloat, n> navigation[3], int i)
 {
 	Boat yacht;
 	yacht.setPosition(0.0, 0.0, 0.0);
@@ -256,14 +267,14 @@ void yacht(float navigation[3][100], int i)
 	glRotatef(navAngle[i] * 180 / GL_PI, 0.0, 0.0, 1.0);
 	yacht.renderAll();
 	glPopMatrix();
-
 }
 
-void swimming(float navigation[3][100])
+template<size_t n>
+void swimming(std::array<GLfloat, n> navigation[3])
 {
 	glColor3f(0, 0, 0);
 	glBegin(GL_LINE_STRIP);
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < n; i++)
 		glVertex3f(navigation[0][i], navigation[1][i], navigation[2][i]);
 	glEnd();
 }
@@ -396,8 +407,8 @@ void RenderScene(void)
 	//fill navigation array with coordinates of boat swimming
 	setPath();
 
-	swimming(navigation); //draw trajectory of boat swimming
-	yacht(navigation,time); //swim
+	swimming<200>(navigation); //draw trajectory of boat swimming
+	yacht<200>(navigation, time); //swim
 
 	/////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -875,7 +886,7 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 	{
 		//change the position of the boat
 						
-				if (time < 99)
+				if (time < navigation[0].size() - 1)
 					time++;
 				else
 					time = 0;
