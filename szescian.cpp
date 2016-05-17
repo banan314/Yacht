@@ -41,11 +41,13 @@ static GLfloat xTrans, yTrans, zTrans;
 //boat constants
 std::array<GLfloat, 200> navigation[3];
 GLfloat navAngle[200];
-Physics balt17; //yacht
+Physics balt17; //yacht physics
+float windFloatFooVar[3] = { 0, 0, 0.0f }; //variable needed for AntTweakBar to work
+float boatScale = 1.0; //scale factor of boat
 
 //time constants
 int time = 0; 
-float deltaTime = 0.08;
+float deltaTime = 1;
 
 static GLsizei lastHeight;
 static GLsizei lastWidth;
@@ -258,6 +260,7 @@ void yacht(std::array<GLfloat, n> navigation[3], int i)
 	Boat yacht;
 	yacht.setPosition(0.0, 0.0, 0.0);
 
+	balt17.setForce(windFloatFooVar);
 	balt17.computeNew(yacht.getMass(), deltaTime);
 
 	glPushMatrix();
@@ -265,7 +268,10 @@ void yacht(std::array<GLfloat, n> navigation[3], int i)
 	glTranslatef(navigation[0][i] + balt17.getPos()[0],
 		navigation[1][i] + balt17.getPos()[1], navigation[2][i] + balt17.getPos()[2]);
 	glRotatef(navAngle[i] * 180 / GL_PI, 0.0, 0.0, 1.0);
-	yacht.renderAll();
+	if (boatScale != 0.0)
+		yacht.renderAll(boatScale);
+	else
+		yacht.renderAll();
 	glPopMatrix();
 }
 
@@ -409,6 +415,8 @@ void RenderScene(void)
 
 	swimming<200>(navigation); //draw trajectory of boat swimming
 	yacht<200>(navigation, time); //swim
+
+
 
 	/////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -644,7 +652,7 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 		balt17.setPos(new float[3] {0.0, 0.0, 0.0});
 		balt17.setVel(new float[3] {0.0, 0.0, 0.0});
 		balt17.setAccel(new float[3] {0.0, 0.0, 0.0});
-		balt17.setForce(new float[3] { 0.0f, 4.0f, 0.2f });
+		balt17.setForce(new float[3] { 0.0f, 0, 0.0f });
 
 		//set timer for time-out 70ms
 		SetTimer(hWnd, TimerID, 70, NULL);
@@ -708,10 +716,19 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 		//------------------------------------------
 		//AntTweakBar routines
 		//------------------------------------------
-		TwBar *myBar;
-		myBar = TwNewBar("viewRangeBar");
+		TwBar *bar ;
+		bar = TwNewBar("Bar");
 
-		TwAddVarRW(myBar, "viewRange", TW_TYPE_FLOAT, &nRange, "min=50 max=4000");
+		TwAddVarRW(bar, "nRange", TW_TYPE_FLOAT, &nRange, "label='view Range' min=50 max=4000 step=10");
+		 // Add 'ka', 'kb and 'kc' to 'bar': they are modifiable variables of type TW_TYPE_DOUBLE
+		TwAddVarRW(bar, "ka", TW_TYPE_FLOAT, &windFloatFooVar[0], 
+				   " label='X path coord' keyIncr=1 keyDecr=CTRL+1 min=-7 max=7 step=1 ");
+		TwAddVarRW(bar, "kb", TW_TYPE_FLOAT, &windFloatFooVar[1],
+				   " label='Y path coord' keyIncr=2 keyDecr=CTRL+2 min=-7 max=7 step=1 ");
+		TwAddVarRW(bar, "kc", TW_TYPE_FLOAT, &windFloatFooVar[2],
+				   " label='Z path coord' keyIncr=3 keyDecr=CTRL+3 min=-7 max=7 step=1 ");
+		TwAddVarRW(bar, "scale", TW_TYPE_FLOAT, &boatScale,
+			"label='scale boat' min=-10 max=10 step=0.1");
 		//------------------------------------------
 
 
@@ -832,7 +849,7 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 								nRange -= 100.0;
 						   RECT rc;
 						   GetWindowRect(hWnd, &rc);
-						   GLsizei w = rc.right - rc.left, h = rc.top - rc.bottom;
+						   GLsizei w = rc.right - rc.left, h = rc.bottom - rc.top;
 							
 						   // Call our function which modifies the clipping
 						   // volume and viewport
@@ -845,7 +862,7 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 								nRange += 100;
 							RECT rc;
 							GetWindowRect(hWnd, &rc);
-							GLsizei w = rc.right - rc.left, h = rc.top - rc.bottom;
+							GLsizei w = rc.right - rc.left, h = rc.bottom - rc.top;
 
 							// Call our function which modifies the clipping
 							// volume and viewport

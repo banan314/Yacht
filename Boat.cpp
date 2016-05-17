@@ -21,6 +21,18 @@ void Boat::renderAll()
 	zagiel(80.0f, 10.0f);
 }
 
+void Boat::renderAll(float scale)
+{
+	if (scale == 0.0)
+	{
+		renderAll(); return;
+	}
+	glPushMatrix();
+	glScalef(scale, scale, scale);
+	renderAll();
+	glPopMatrix();
+}
+
 void drawCuboid(GLfloat[6]);
 void drawTriangle(float *, float *, float *);
 
