@@ -41,8 +41,6 @@ local.properties
 *.user
 *.sln.docstates
 *.sln
-*.vcxproj
-*.vcxproj.filters
 
 # Build results
 
@@ -169,6 +167,10 @@ UpgradeLog*.htm
 App_Data/*.mdf
 App_Data/*.ldf
 
+#Others
+*.vcxproj.filters
+*.vcxproj
+
 #############
 ## Windows detritus
 #############
@@ -245,8 +247,5 @@ pip-log.txt
 *.out
 *.synctex.gz
 *.bib
-
-# resource
-*.H
-*.APS
-*.RC
+glew.h
+glew32s.lib
