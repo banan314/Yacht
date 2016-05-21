@@ -1,9 +1,9 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <windows.h>            // Window defines
-#include <gl\glew.h>
-#include <GL\freeglut.h>
-#include <gl\gl.h>              // OpenGL
-#include <gl\glu.h>             // GLU library
+#include "gl\glew.h"
+#include "GL\freeglut.h"
+#include "gl\gl.h"              // OpenGL
+#include "gl\glu.h"             // GLU library
 #define LS (LPCSTR)
 #include <CommCtrl.h>
 
@@ -601,11 +601,11 @@ int APIENTRY WinMain(HINSTANCE       hInst,
 	
 	// Very important!  This initializes the entry points in the OpenGL driver so we can 
 	// call all the functions in the API.
-	GLenum err = glewInit();
+	/*GLenum err = glewInit();
 	if (GLEW_OK != err) {
 		fprintf(stderr, "GLEW error");
 		return 1;
-	}
+	}*/
 
 	LocalFree(szArgList);
 
