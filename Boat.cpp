@@ -33,6 +33,26 @@ void Boat::renderAll(float scale)
 	glPopMatrix();
 }
 
+void Boat::renderMirror()
+{
+	//mirror everything from top do bottom
+	const GLfloat m[16] = {  1, 0, 0, 0 ,  0, 1, 0, 0 ,  0, 0, -1, 0 ,  0, 0, 0, 1  };
+	glPushMatrix();
+	glMultMatrixf(m);
+	renderAll();
+	glPopMatrix();
+}
+
+void Boat::renderMirror(float scale)
+{
+	//mirror everything from top do bottom
+	const GLfloat m[16] = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1 };
+	glPushMatrix();
+	glMultMatrixf(m);
+	renderAll(scale);
+	glPopMatrix();
+}
+
 void drawCuboid(GLfloat[6]);
 void drawTriangle(float *, float *, float *);
 

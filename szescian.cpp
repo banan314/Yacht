@@ -43,7 +43,7 @@ std::array<GLfloat, 200> navigation[3];
 GLfloat navAngle[200];
 Physics balt17; //yacht physics
 float windFloatFooVar[3] = { 0, 0, 0.0f }; //variable needed for AntTweakBar to work
-float boatScale = 1.0; //scale factor of boat
+float boatScale = 2.4; //scale factor of boat
 
 //time constants
 int time = 0; 
@@ -214,7 +214,8 @@ void SetupRC()
 //rysuje akwen
 void akwen(void)
 {
-	glColor3f(0.084f, 0.648f, 0.8f);
+	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	glColor4f(0.084f, 0.648f, 0.8f, 0.8f);
 	glRectf(-5500, -5500, 5500, 5500);
 }
 
@@ -264,14 +265,21 @@ void yacht(std::array<GLfloat, n> navigation[3], int i)
 	balt17.computeNew(yacht.getMass(), deltaTime);
 
 	glPushMatrix();
-	
+
 	glTranslatef(navigation[0][i] + balt17.getPos()[0],
 		navigation[1][i] + balt17.getPos()[1], navigation[2][i] + balt17.getPos()[2]);
 	glRotatef(navAngle[i] * 180 / GL_PI, 0.0, 0.0, 1.0);
 	if (boatScale != 0.0)
+	{
 		yacht.renderAll(boatScale);
+		yacht.renderMirror(boatScale);
+	}
+
 	else
+	{
 		yacht.renderAll();
+		yacht.renderMirror();
+	}
 	glPopMatrix();
 }
 
@@ -407,7 +415,6 @@ void RenderScene(void)
 	//yacht.renderAll();
 
 	//Rysowanie obiektów:
-	akwen();
 	marina();
 
 	//fill navigation array with coordinates of boat swimming
@@ -416,6 +423,10 @@ void RenderScene(void)
 	swimming<200>(navigation); //draw trajectory of boat swimming
 	yacht<200>(navigation, time); //swim
 
+	glEnable(GL_BLEND);                         // Enable Blending (Otherwise The Reflected Object Wont Show)
+	//glDisable(GL_LIGHTING);                         // Since We Use Blending, We Disable Lighting
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);          // Blending Based On Source Alpha And 1 Minus 
+	akwen();
 
 
 	/////////////////////////////////////////////////////////////////
@@ -728,7 +739,7 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 		TwAddVarRW(bar, "kc", TW_TYPE_FLOAT, &windFloatFooVar[2],
 				   " label='Z path coord' keyIncr=3 keyDecr=CTRL+3 min=-7 max=7 step=1 ");
 		TwAddVarRW(bar, "scale", TW_TYPE_FLOAT, &boatScale,
-			"label='scale boat' min=-10 max=10 step=0.1");
+			"label='scale boat' min=0.1 max=15 step=0.1");
 		//------------------------------------------
 
 

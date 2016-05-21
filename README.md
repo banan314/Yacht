@@ -25,3 +25,4 @@ D. **WndProc** in *WM_PAINT*: TwDraw();
 [2] https://www.youtube.com/watch?v=8p76pJsUP44
 [3] http://stackoverflow.com/questions/8494942/why-does-my-color-go-away-when-i-enable-lighting-in-opengl
 [4] Woo, Mason; Neider, Jackie; Davis, Tom OpenGL Programming Guide. The Official Guide to Learning OpenGL, Version 1.1. 2nd Edition
+[5] http://nehe.gamedev.net/tutorial/clipping__reflections_using_the_stencil_buffer/17004/
