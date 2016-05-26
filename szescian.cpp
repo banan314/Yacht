@@ -55,6 +55,7 @@ static GLsizei lastWidth;
 // Opis tekstury
 BITMAPINFOHEADER	bitmapInfoHeader;	// nag³ówek obrazu
 unsigned char*		bitmapData;			// dane tekstury
+unsigned char*		waterBitmapData;			// dane tekstury
 unsigned int		texture[2];			// obiekt tekstury
 
 //size
@@ -680,7 +681,7 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 		SetupRC();
 		glGenTextures(2, &texture[0]);                  // tworzy obiekt tekstury			
 
-		// ³aduje pierwszy obraz tekstury:
+		// Laduje pierwszy obraz tekstury:
 		bitmapData = LoadBitmapFile("Bitmapy\\checker.bmp", &bitmapInfoHeader);
 
 		glBindTexture(GL_TEXTURE_2D, texture[0]);       // aktywuje obiekt tekstury
@@ -698,8 +699,8 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 		if (bitmapData)
 			free(bitmapData);
 
-		// ³aduje drugi obraz tekstury:
-		bitmapData = LoadBitmapFile("Bitmapy\\crate.bmp", &bitmapInfoHeader);
+		// Laduje obraz tekstury WODA:
+		waterBitmapData = LoadBitmapFile("Bitmapy\\water.bmp", &bitmapInfoHeader);
 		glBindTexture(GL_TEXTURE_2D, texture[1]);       // aktywuje obiekt tekstury
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -711,9 +712,6 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 		// tworzy obraz tekstury
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, bitmapInfoHeader.biWidth,
 			bitmapInfoHeader.biHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, bitmapData);
-
-		if (bitmapData)
-			free(bitmapData);
 
 		// ustalenie sposobu mieszania tekstury z t³em
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
@@ -736,8 +734,6 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 				   " label='X path coord' keyIncr=1 keyDecr=CTRL+1 min=-7 max=7 step=1 ");
 		TwAddVarRW(bar, "kb", TW_TYPE_FLOAT, &windFloatFooVar[1],
 				   " label='Y path coord' keyIncr=2 keyDecr=CTRL+2 min=-7 max=7 step=1 ");
-		TwAddVarRW(bar, "kc", TW_TYPE_FLOAT, &windFloatFooVar[2],
-				   " label='Z path coord' keyIncr=3 keyDecr=CTRL+3 min=-7 max=7 step=1 ");
 		TwAddVarRW(bar, "scale", TW_TYPE_FLOAT, &boatScale,
 			"label='scale boat' min=0.1 max=15 step=0.1");
 		//------------------------------------------
@@ -760,6 +756,9 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 		PostQuitMessage(0);
 		KillTimer(hWnd, TimerID);
 		TwTerminate();
+
+		if (waterBitmapData)
+			free(waterBitmapData);
 		break;
 
 		// Window is resized.
@@ -901,10 +900,10 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 
 						   // Display the about box
 					   case ID_HELP_ABOUT:
-						   /*DialogBox(hInstance,
+						   DialogBoxA(hInstance,
 							   MAKEINTRESOURCE(IDD_DIALOG_ABOUT),
-							   hWnd),
-							   (lpDialogFunc)AboutDlgProc);*/
+							   hWnd,
+							   &AboutDlgProc);
 						   break;
 					   }
 	}
@@ -945,6 +944,8 @@ BOOL APIENTRY AboutDlgProc(HWND hDlg, UINT message, UINT wParam, LONG lParam)
 	{
 						  int i;
 						  GLenum glError;
+
+						  SetDlgItemText(hDlg, 143, LS "Authors: Kamil Lopuszanski, Patryk Mendrala");
 
 						  // glGetString demo
 						  SetDlgItemText(hDlg, IDC_OPENGL_VENDOR, (LPCSTR)glGetString(GL_VENDOR));
