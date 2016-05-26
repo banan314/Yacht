@@ -18,6 +18,13 @@ B. **WndProc** in *WM_CREATE*: AntTweakBar initialization, redirection of GLUT e
 C. **WndProc** in *WM_DESTROY*: terminiation of AntTweakBar
 D. **WndProc** in *WM_PAINT*: TwDraw();
 
+#Tekstury
+Aby użyć tekstury, należy:
+1. Stworzyć objekt tesktury i określić dla niego teksturę.
+2. Określić, jak tekstura jest zmapowana dla każdego piksela.
+3. Napisać glEnable(GL_TEXTURE_ND);, gdzie N jest liczbą wymiarów tekstury.
+4. Narysować scenę, pamiętając o teksturze i współrzędnych geometrycznych.
+
 ##GLUT code
 **APIENTRY WinMain**: glutInit and glewInit
 

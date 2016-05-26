@@ -249,3 +249,5 @@ pip-log.txt
 *.bib
 glew.h
 glew32s.lib
+
+*.js
