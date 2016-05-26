@@ -16,6 +16,9 @@ public:
 	void setPosition(float, float);
 	void setPosition(float, float, float);
 	void renderAll();
+	void renderAll(float scale);
+	void renderMirror(float scale);
+	void renderMirror();
 	~Boat();
 };
 
