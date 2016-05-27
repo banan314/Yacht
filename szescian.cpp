@@ -224,9 +224,9 @@ void akwen(void)
 		glBindTexture(GL_TEXTURE_2D, texture[1]);       // aktywuje obiekt tekstury
 		glBegin(GL_QUADS);
 		glTexCoord2f(0.0, 0.0); glVertex3f(-range, -range, 0.0);
-		glTexCoord2f(0.0, 1.0); glVertex3f(-range, range, 0.0);
-		glTexCoord2f(1.0, 1.0); glVertex3f(range, range, 0.0);
-		glTexCoord2f(1.0, 0.0); glVertex3f(range, -range, 0.0);
+		glTexCoord2f(0.0, 9.0); glVertex3f(-range, range, 0.0);
+		glTexCoord2f(9.0, 9.0); glVertex3f(range, range, 0.0);
+		glTexCoord2f(9.0, 0.0); glVertex3f(range, -range, 0.0);
 		glEnd();
 	glDisable(GL_TEXTURE_2D);
 }
@@ -719,8 +719,8 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 		// tworzy obraz tekstury
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, bitmapInfoHeader.biWidth,
