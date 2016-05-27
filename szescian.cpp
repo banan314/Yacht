@@ -215,9 +215,20 @@ void SetupRC()
 //rysuje akwen
 void akwen(void)
 {
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	glColor4f(0.084f, 0.648f, 0.8f, 0.8f);
-	glRectf(-5500, -5500, 5500, 5500);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glEnable(GL_TEXTURE_2D);
+		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+		glColor4f(0.084f, 0.648f, 0.8f, 0.8f);
+		//glRectf(-5500, -5500, 5500, 5500);
+		const float range = 5500;
+		glBindTexture(GL_TEXTURE_2D, texture[1]);       // aktywuje obiekt tekstury
+		glBegin(GL_QUADS);
+		glTexCoord2f(0.0, 0.0); glVertex3f(-range, -range, 0.0);
+		glTexCoord2f(0.0, 1.0); glVertex3f(-range, range, 0.0);
+		glTexCoord2f(1.0, 1.0); glVertex3f(range, range, 0.0);
+		glTexCoord2f(1.0, 0.0); glVertex3f(range, -range, 0.0);
+		glEnd();
+	glDisable(GL_TEXTURE_2D);
 }
 
 void setPath()
@@ -427,8 +438,8 @@ void RenderScene(void)
 	glEnable(GL_BLEND);                         // Enable Blending (Otherwise The Reflected Object Wont Show)
 	//glDisable(GL_LIGHTING);                         // Since We Use Blending, We Disable Lighting
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);          // Blending Based On Source Alpha And 1 Minus 
-	akwen();
 
+	akwen();
 
 	/////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -701,6 +712,8 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 
 		// Laduje obraz tekstury WODA:
 		waterBitmapData = LoadBitmapFile("Bitmapy\\water.bmp", &bitmapInfoHeader);
+
+		glGenTextures(1, texture);
 		glBindTexture(GL_TEXTURE_2D, texture[1]);       // aktywuje obiekt tekstury
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -711,7 +724,7 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 
 		// tworzy obraz tekstury
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, bitmapInfoHeader.biWidth,
-			bitmapInfoHeader.biHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, bitmapData);
+			bitmapInfoHeader.biHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, waterBitmapData);
 
 		// ustalenie sposobu mieszania tekstury z t³em
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);

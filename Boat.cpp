@@ -18,7 +18,43 @@ void Boat::renderAll()
 	dziob();
 	maszt(80.0f, 10.0f);
 	rufa();
+	
 	zagiel(80.0f, 10.0f);
+}
+
+void Boat::renderAll(float scale)
+{
+	if (scale == 0.0)
+	{
+		renderAll(); return;
+	}
+	glPushMatrix();
+	glScalef(scale, scale, scale);
+	renderAll();
+	glPopMatrix();
+}
+
+void Boat::renderMirror()
+{
+	//mirror everything from top do bottom
+	const GLfloat m[16] = {  1, 0, 0, 0 ,  0, 1, 0, 0 ,  0, 0, -1, 0 ,  0, 0, 0, 1  };
+	glPushMatrix();
+	glMultMatrixf(m);
+	renderAll();
+	glPopMatrix();
+}
+
+void Boat::renderMirror(float scale)
+{
+	//mirror everything from top do bottom
+	const GLfloat m[16] = { 1, 0, 0, 0, 
+							0, 1, 0, 0, 
+							0, 0, -1, 0,
+							0, 0, 0, 1 };
+	glPushMatrix();
+	glMultMatrixf(m);
+	renderAll(scale);
+	glPopMatrix();
 }
 
 void drawCuboid(GLfloat[6]);
@@ -223,12 +259,26 @@ void Boat::rufa()
 void Boat::zagiel(float masztDlugosc, float masztDolWysokosc)
 {
 	glColor3f(0.95f, 0.95f, 0.95f);
-	drawTriangle(new float[3] { posX + (5.0f), posY + ( 0.0f),posZ +  ( masztDolWysokosc + masztDlugosc / 11.0f)},
-		new float[3] { posX + (5.0f), posY + ( 0.0f),posZ +  ( (masztDolWysokosc + masztDlugosc))},
-		new float[3] { posX + (-20.0f), posY + ( 0.0f),posZ +  ( masztDolWysokosc + masztDlugosc / 11.0f + 1)});
-	drawTriangle(new float[3] { posX + (5.0f), posY + ( 0.0f),posZ +  ( masztDolWysokosc)},
-		new float[3] { posX + (7.0f), posY + ( 0.0f),posZ +  ( masztDolWysokosc + masztDlugosc / 16.5f * 13.0f)},
-		new float[3] { posX + (30.0f), posY + ( 0.0f),posZ +  ( masztDolWysokosc * 2.0f / 3.0f)});
+	drawTriangle(new float[3] { posX + (5.0f), posY + (0.0f), posZ + (masztDolWysokosc + masztDlugosc / 11.0f)},
+		new float[3] { posX + (5.0f), posY + (0.0f), posZ + ((masztDolWysokosc + masztDlugosc))},
+		new float[3] { posX + (-20.0f), posY + (0.0f), posZ + (masztDolWysokosc + masztDlugosc / 11.0f + 1)});
+	drawTriangle(new float[3] { posX + (5.0f), posY + (0.0f), posZ + (masztDolWysokosc)},
+		new float[3] { posX + (7.0f), posY + (0.0f), posZ + (masztDolWysokosc + masztDlugosc / 16.5f * 13.0f)},
+		new float[3] { posX + (30.0f), posY + (0.0f), posZ + (masztDolWysokosc * 2.0f / 3.0f)});
+
+	//druga strona
+	/*drawTriangle(new float[3] {-posX - (5.0f), posY + (0.0f), posZ + (masztDolWysokosc + masztDlugosc / 11.0f)},
+		new float[3] {-posX - (5.0f), posY + (0.0f), posZ + ((masztDolWysokosc + masztDlugosc))},
+		new float[3] {-posX - (-20.0f), posY + (0.0f), posZ + (masztDolWysokosc + masztDlugosc / 11.0f + 1)});
+	drawTriangle(new float[3] {-posX - (5.0f), posY + (0.0f), posZ + (masztDolWysokosc)},
+		new float[3] {-posX - (7.0f), posY + (0.0f), posZ + (masztDolWysokosc + masztDlugosc / 16.5f * 13.0f)},
+		new float[3] {-posX - (30.0f), posY + (0.0f), posZ + (masztDolWysokosc * 2.0f / 3.0f)});*/
+	/*drawTriangle(new float[3] { posY + (0.0f), posX + (5.0f), posZ + (masztDolWysokosc + masztDlugosc / 11.0f)},
+		new float[3] { posY + (0.0f), posX + (5.0f), posZ + ((masztDolWysokosc + masztDlugosc))},
+		new float[3] { posX + (-20.0f), posZ + (masztDolWysokosc + masztDlugosc / 11.0f + 1), posY + (0.0f)});
+	drawTriangle(new float[3] { posY + (0.0f),posX + (5.0f),  posZ + (masztDolWysokosc)},
+		new float[3] { posY + (0.0f),posX + (7.0f),  posZ + (masztDolWysokosc + masztDlugosc / 16.5f * 13.0f)},
+		new float[3] { posY + (0.0f),posX + (30.0f),  posZ + (masztDolWysokosc * 2.0f / 3.0f)});*/
 }
 
 void Boat::setPosition(float x, float y)

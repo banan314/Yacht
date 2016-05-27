@@ -3,7 +3,6 @@
 #include <windows.h>            // Window defines
 #include <gl\gl.h>              // OpenGL
 #include <gl\glu.h>             // GLU library
-#include "resource.h"           // About box resource identifiers.
 
 void drawCuboid(GLfloat xyz[6])
 {
@@ -11,18 +10,18 @@ void drawCuboid(GLfloat xyz[6])
 	{
 
 		for (int j = 0; j < 2; j++)
-		for (int i = 0; i < 3; i++)
-		{
-			int foox = (i == 0) * j;
-			int fooy = (i == 1) * j + 2;
-			int fooz = (i == 2) * j + 4;
-			glBegin(GL_POLYGON);
-			glVertex3f(xyz[foox], xyz[fooy], xyz[fooz]);
-			glVertex3f(xyz[foox + (i != 0)], xyz[fooy + (i == 0)], xyz[fooz]);
-			glVertex3f(xyz[foox + (i != 0)], xyz[fooy + (i != 1)], xyz[fooz + (i != 2)]);
-			glVertex3f(xyz[foox], xyz[fooy + (i == 2)], xyz[fooz + (i != 2)]);
-			glEnd();
-		}
+			for (int i = 0; i < 3; i++)
+			{
+				int foox = (i == 0) * j;
+				int fooy = (i == 1) * j + 2;
+				int fooz = (i == 2) * j + 4;
+				glBegin(GL_POLYGON);
+				glVertex3f(xyz[foox], xyz[fooy], xyz[fooz]);
+				glVertex3f(xyz[foox + (i != 0)], xyz[fooy + (i == 0)], xyz[fooz]);
+				glVertex3f(xyz[foox + (i != 0)], xyz[fooy + (i != 1)], xyz[fooz + (i != 2)]);
+				glVertex3f(xyz[foox], xyz[fooy + (i == 2)], xyz[fooz + (i != 2)]);
+				glEnd();
+			}
 	}
 }
 
