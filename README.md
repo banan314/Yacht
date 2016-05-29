@@ -33,3 +33,4 @@ Aby użyć tekstury, należy:
 [3] http://stackoverflow.com/questions/8494942/why-does-my-color-go-away-when-i-enable-lighting-in-opengl
 [4] Woo, Mason; Neider, Jackie; Davis, Tom OpenGL Programming Guide. The Official Guide to Learning OpenGL, Version 1.1. 2nd Edition
 [5] http://nehe.gamedev.net/tutorial/clipping__reflections_using_the_stencil_buffer/17004/
+[6] Hawkins, Kevin; Astle, Dave _OpenGL Programowanie gier_
