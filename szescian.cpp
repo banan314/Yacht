@@ -18,12 +18,13 @@
 #include "shapeUtils.h"
 #include "Marina.h"
 
+#include "windowsUtilities.h"
+
 #include <array>
 
 #pragma region globals
 
 #define glRGB(x, y, z)	glColor3ub((GLubyte)x, (GLubyte)y, (GLubyte)z)
-#define BITMAP_ID 0x4D42		// identyfikator formatu BMP
 #define GL_PI 3.14
 
 // Color Palette handle
@@ -59,76 +60,11 @@ unsigned char*		waterBitmapData;			// dane tekstury
 unsigned int		texture[2];			// obiekt tekstury
 
 //size
-static GLfloat nRange = 3000.0f;
+static GLfloat nRange = 1900.0f;
+
+static bool trajectoryVisible = true;
 
 #pragma endregion globals
-
-#pragma region windowsUtils
-// Declaration for Window procedure
-LRESULT CALLBACK WndProc(HWND    hWnd,
-	UINT    message,
-	WPARAM  wParam,
-	LPARAM  lParam);
-
-// Dialog procedure for about box
-BOOL APIENTRY AboutDlgProc(HWND hDlg, UINT message, UINT wParam, LONG lParam);
-
-// Set Pixel Format function - forward declaration
-void SetDCPixelFormat(HDC hDC);
-
-
-
-// Reduces a normal vector specified as a set of three coordinates,
-// to a unit normal vector of length one.
-void ReduceToUnit(float vector[3])
-{
-	float length;
-
-	// Calculate the length of the vector		
-	length = (float)sqrt((vector[0] * vector[0]) +
-		(vector[1] * vector[1]) +
-		(vector[2] * vector[2]));
-
-	// Keep the program from blowing up by providing an exceptable
-	// value for vectors that may calculated too close to zero.
-	if (length == 0.0f)
-		length = 1.0f;
-
-	// Dividing each element by the length will result in a
-	// unit normal vector.
-	vector[0] /= length;
-	vector[1] /= length;
-	vector[2] /= length;
-}
-
-
-// Points p1, p2, & p3 specified in counter clock-wise order
-void calcNormal(float v[3][3], float out[3])
-{
-	float v1[3], v2[3];
-	static const int x = 0;
-	static const int y = 1;
-	static const int z = 2;
-
-	// Calculate two vectors from the three points
-	v1[x] = v[0][x] - v[1][x];
-	v1[y] = v[0][y] - v[1][y];
-	v1[z] = v[0][z] - v[1][z];
-
-	v2[x] = v[1][x] - v[2][x];
-	v2[y] = v[1][y] - v[2][y];
-	v2[z] = v[1][z] - v[2][z];
-
-	// Take the cross product of the two vectors to get
-	// the normal vector which will be stored in out
-	out[x] = v1[y] * v2[z] - v1[z] * v2[y];
-	out[y] = v1[z] * v2[x] - v1[x] * v2[z];
-	out[z] = v1[x] * v2[y] - v1[y] * v2[x];
-
-	// Normalize the vector (shorten length to one)
-	ReduceToUnit(out);
-}
-
 
 
 // Change viewing volume and viewport.  Called when window is resized
@@ -164,7 +100,6 @@ void ChangeSize(GLsizei w, GLsizei h)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
-#pragma endregion windowsUtils
 
 
 // This function does any needed initialization on the rendering
@@ -273,6 +208,7 @@ void yacht(std::array<GLfloat, n> navigation[3], int i)
 	Boat yacht;
 	yacht.setPosition(0.0, 0.0, 0.0);
 
+
 	balt17.setForce(windFloatFooVar);
 	balt17.computeNew(yacht.getMass(), deltaTime);
 
@@ -292,6 +228,7 @@ void yacht(std::array<GLfloat, n> navigation[3], int i)
 		yacht.renderAll();
 		yacht.renderMirror();
 	}
+
 	glPopMatrix();
 }
 
@@ -324,74 +261,9 @@ void light()
 	//glEnable(GL_LIGHT0);
 }
 
-// LoadBitmapFile
-// opis: ³aduje mapê bitow¹ z pliku i zwraca jej adres.
-//       Wype³nia strukturê nag³ówka.
-//	 Nie obs³uguje map 8-bitowych.
-unsigned char *LoadBitmapFile(char *filename, BITMAPINFOHEADER *bitmapInfoHeader)
-{
-	FILE *filePtr;							// wskaŸnik pozycji pliku
-	BITMAPFILEHEADER	bitmapFileHeader;		// nag³ówek pliku
-	unsigned char		*bitmapImage;			// dane obrazu
-	unsigned int		imageIdx = 0;		// licznik pikseli
-	unsigned char		tempRGB;				// zmienna zamiany sk³adowych
-
-	// otwiera plik w trybie "read binary"
-	filePtr = fopen(filename, "rb");
-	if (filePtr == NULL)
-		return NULL;
-
-	// wczytuje nag³ówek pliku
-	fread(&bitmapFileHeader, sizeof(BITMAPFILEHEADER), 1, filePtr);
-
-	// sprawdza, czy jest to plik formatu BMP
-	if (bitmapFileHeader.bfType != BITMAP_ID)
-	{
-		fclose(filePtr);
-		return NULL;
-	}
-
-	// wczytuje nag³ówek obrazu
-	fread(bitmapInfoHeader, sizeof(BITMAPINFOHEADER), 1, filePtr);
-
-	// ustawia wskaŸnik pozycji pliku na pocz¹tku danych obrazu
-	fseek(filePtr, bitmapFileHeader.bfOffBits, SEEK_SET);
-
-	// przydziela pamiêæ buforowi obrazu
-	bitmapImage = (unsigned char*)malloc(bitmapInfoHeader->biSizeImage);
-
-	// sprawdza, czy uda³o siê przydzieliæ pamiêæ
-	if (!bitmapImage)
-	{
-		free(bitmapImage);
-		fclose(filePtr);
-		return NULL;
-	}
-
-	// wczytuje dane obrazu
-	fread(bitmapImage, 1, bitmapInfoHeader->biSizeImage, filePtr);
-
-	// sprawdza, czy dane zosta³y wczytane
-	if (bitmapImage == NULL)
-	{
-		fclose(filePtr);
-		return NULL;
-	}
-
-	// zamienia miejscami sk³adowe R i B 
-	for (imageIdx = 0; imageIdx < bitmapInfoHeader->biSizeImage; imageIdx += 3)
-	{
-		tempRGB = bitmapImage[imageIdx];
-		bitmapImage[imageIdx] = bitmapImage[imageIdx + 2];
-		bitmapImage[imageIdx + 2] = tempRGB;
-	}
-
-	// zamyka plik i zwraca wskaŸnik bufora zawieraj¹cego wczytany obraz
-	fclose(filePtr);
-	return bitmapImage;
-}
-
-
+static GLdouble camEye[3] = { 430, 20, -230 }, 
+camCenter[3] = { 400, -10, -40 },
+camUp[3] = { 5, 55, 370 };
 // Called to draw scene
 void RenderScene(void)
 {
@@ -400,15 +272,24 @@ void RenderScene(void)
 	// Clear the window with current clearing color
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
 	// Save the matrix state and do the rotations
 	glPushMatrix();
+	glLoadIdentity();
 	glRotatef(xRot, 1.0f, 0.0f, 0.0f);
 	glRotatef(yRot, 0.0f, 0.0f, 1.0f);
 	glTranslatef(xTrans, yTrans, zTrans);
 
+
 	/////////////////////////////////////////////////////////////////
 	// MIEJSCE NA KOD OPENGL DO TWORZENIA WLASNYCH SCEN:		   //
 	/////////////////////////////////////////////////////////////////
+
+	////ustawienie kamery
+	gluLookAt(camEye[0], camEye[1], camEye[2],
+		camCenter[0], camCenter[1], camCenter[2],
+		camUp[0], camUp[1], camUp[2]
+		);
 
 	//Sposób na odróŸnienie "przedniej" i "tylniej" œciany wielok¹ta:
 	glPolygonMode(GL_BACK, GL_LINE);
@@ -429,10 +310,12 @@ void RenderScene(void)
 	//Rysowanie obiektów:
 	marina();
 
+
 	//fill navigation array with coordinates of boat swimming
 	setPath();
 
-	swimming<200>(navigation); //draw trajectory of boat swimming
+	if (trajectoryVisible)
+		swimming<200>(navigation); //draw trajectory of boat swimming
 	yacht<200>(navigation, time); //swim
 
 	glEnable(GL_BLEND);                         // Enable Blending (Otherwise The Reflected Object Wont Show)
@@ -440,7 +323,6 @@ void RenderScene(void)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);          // Blending Based On Source Alpha And 1 Minus 
 
 	akwen();
-
 	/////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////
@@ -451,112 +333,6 @@ void RenderScene(void)
 	glFlush();
 }
 
-
-// Select the pixel format for a given device context
-void SetDCPixelFormat(HDC hDC)
-{
-	int nPixelFormat;
-
-	static PIXELFORMATDESCRIPTOR pfd = {
-		sizeof(PIXELFORMATDESCRIPTOR),  // Size of this structure
-		1,                                                              // Version of this structure    
-		PFD_DRAW_TO_WINDOW |                    // Draw to Window (not to bitmap)
-		PFD_SUPPORT_OPENGL |					// Support OpenGL calls in window
-		PFD_DOUBLEBUFFER,                       // Double buffered
-		PFD_TYPE_RGBA,                          // RGBA Color mode
-		24,                                     // Want 24bit color 
-		0, 0, 0, 0, 0, 0,                            // Not used to select mode
-		0, 0,                                    // Not used to select mode
-		0, 0, 0, 0, 0,                              // Not used to select mode
-		32,                                     // Size of depth buffer
-		0,                                      // Not used to select mode
-		0,                                      // Not used to select mode
-		PFD_MAIN_PLANE,                         // Draw in main plane
-		0,                                      // Not used to select mode
-		0, 0, 0 };                                // Not used to select mode
-
-	// Choose a pixel format that best matches that described in pfd
-	nPixelFormat = ChoosePixelFormat(hDC, &pfd);
-
-	// Set the pixel format for the device context
-	SetPixelFormat(hDC, nPixelFormat, &pfd);
-}
-
-
-#pragma region palette
-// If necessary, creates a 3-3-2 palette for the device context listed.
-HPALETTE GetOpenGLPalette(HDC hDC)
-{
-	HPALETTE hRetPal = NULL;	// Handle to palette to be created
-	PIXELFORMATDESCRIPTOR pfd;	// Pixel Format Descriptor
-	LOGPALETTE *pPal;			// Pointer to memory for logical palette
-	int nPixelFormat;			// Pixel format index
-	int nColors;				// Number of entries in palette
-	int i;						// Counting variable
-	BYTE RedRange, GreenRange, BlueRange;
-	// Range for each color entry (7,7,and 3)
-
-
-	// Get the pixel format index and retrieve the pixel format description
-	nPixelFormat = GetPixelFormat(hDC);
-	DescribePixelFormat(hDC, nPixelFormat, sizeof(PIXELFORMATDESCRIPTOR), &pfd);
-
-	// Does this pixel format require a palette?  If not, do not create a
-	// palette and just return NULL
-	if (!(pfd.dwFlags & PFD_NEED_PALETTE))
-		return NULL;
-
-	// Number of entries in palette.  8 bits yeilds 256 entries
-	nColors = 1 << pfd.cColorBits;
-
-	// Allocate space for a logical palette structure plus all the palette entries
-	pPal = (LOGPALETTE*)malloc(sizeof(LOGPALETTE)+nColors*sizeof(PALETTEENTRY));
-
-	// Fill in palette header 
-	pPal->palVersion = 0x300;		// Windows 3.0
-	pPal->palNumEntries = nColors; // table size
-
-	// Build mask of all 1's.  This creates a number represented by having
-	// the low order x bits set, where x = pfd.cRedBits, pfd.cGreenBits, and
-	// pfd.cBlueBits.  
-	RedRange = (1 << pfd.cRedBits) - 1;
-	GreenRange = (1 << pfd.cGreenBits) - 1;
-	BlueRange = (1 << pfd.cBlueBits) - 1;
-
-	// Loop through all the palette entries
-	for (i = 0; i < nColors; i++)
-	{
-		// Fill in the 8-bit equivalents for each component
-		pPal->palPalEntry[i].peRed = (i >> pfd.cRedShift) & RedRange;
-		pPal->palPalEntry[i].peRed = (unsigned char)(
-			(double)pPal->palPalEntry[i].peRed * 255.0 / RedRange);
-
-		pPal->palPalEntry[i].peGreen = (i >> pfd.cGreenShift) & GreenRange;
-		pPal->palPalEntry[i].peGreen = (unsigned char)(
-			(double)pPal->palPalEntry[i].peGreen * 255.0 / GreenRange);
-
-		pPal->palPalEntry[i].peBlue = (i >> pfd.cBlueShift) & BlueRange;
-		pPal->palPalEntry[i].peBlue = (unsigned char)(
-			(double)pPal->palPalEntry[i].peBlue * 255.0 / BlueRange);
-
-		pPal->palPalEntry[i].peFlags = (unsigned char)NULL;
-	}
-
-
-	// Create the palette
-	hRetPal = CreatePalette(pPal);
-
-	// Go ahead and select and realize the palette for this device context
-	SelectPalette(hDC, hRetPal, FALSE);
-	RealizePalette(hDC);
-
-	// Free the memory used for the logical palette structure
-	free(pPal);
-
-	// Return the handle to the new palette
-	return hRetPal;
-}
-#pragma endregion palette
 
 // Entry point of all Windows programs
 int APIENTRY WinMain(HINSTANCE       hInst,
@@ -744,11 +520,34 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 		TwAddVarRW(bar, "nRange", TW_TYPE_FLOAT, &nRange, "label='view Range' min=50 max=4000 step=10");
 		 // Add 'ka', 'kb and 'kc' to 'bar': they are modifiable variables of type TW_TYPE_DOUBLE
 		TwAddVarRW(bar, "ka", TW_TYPE_FLOAT, &windFloatFooVar[0], 
-				   " label='X path coord' keyIncr=1 keyDecr=CTRL+1 min=-7 max=7 step=1 ");
+				   " label='X path coord'  min=-7 max=7 step=1 ");
 		TwAddVarRW(bar, "kb", TW_TYPE_FLOAT, &windFloatFooVar[1],
-				   " label='Y path coord' keyIncr=2 keyDecr=CTRL+2 min=-7 max=7 step=1 ");
+				   " label='Y path coord'  min=-7 max=7 step=1 ");
 		TwAddVarRW(bar, "scale", TW_TYPE_FLOAT, &boatScale,
 			"label='scale boat' min=0.1 max=15 step=0.1");
+		TwAddVarRW(bar, "AutoRotate", TW_TYPE_BOOL32, &trajectoryVisible,
+			" label='trajectory' key=space help='Toggle visibility of path trajectory' ");
+
+		TwBar *camera;
+		camera = TwNewBar("Camera");
+		TwAddVarRW(camera, "eyex", TW_TYPE_DOUBLE, (camEye),
+			"label='eye x' min=-2000 max=2000 keyIncr=1 keyDecr=CTRL+1 step=1");
+		TwAddVarRW(camera, "eyey", TW_TYPE_DOUBLE, (camEye+1),
+			"label='eye y' min=-2000 max=2000 keyIncr=2 keyDecr=CTRL+2 step=1");
+		TwAddVarRW(camera, "eyez", TW_TYPE_DOUBLE, (camEye+2),
+			"label='eye z' min=-2000 max=2000 keyIncr=3 keyDecr=CTRL+3 step=1");
+		TwAddVarRW(camera, "centerx", TW_TYPE_DOUBLE, (camCenter),
+			"label='center x' min=-500 max=500 keyIncr=4 keyDecr=CTRL+4 step=10");
+		TwAddVarRW(camera, "centery", TW_TYPE_DOUBLE, (camCenter+1),
+			"label='center y' min=-500 max=500 keyIncr=5 keyDecr=CTRL+5 step=10");
+		TwAddVarRW(camera, "centerz", TW_TYPE_DOUBLE, (camCenter + 2),
+			"label='center z' min=-500 max=500 keyIncr=6 keyDecr=CTRL+6 step=10");
+		TwAddVarRW(camera, "upx", TW_TYPE_DOUBLE, (camUp),
+			"label='up x' min=-500 max=500 keyIncr=7 keyDecr=CTRL+7 step=10");
+		TwAddVarRW(camera, "upy", TW_TYPE_DOUBLE, (camUp+1),
+			"label='up y' min=-500 max=500 keyIncr=8 keyDecr=CTRL+8 step=10");
+		TwAddVarRW(camera, "upz", TW_TYPE_DOUBLE, (camUp+2),
+			"label='up z' min=-500 max=500 keyIncr=9 keyDecr=CTRL+9 step=10");
 		//------------------------------------------
 
 
@@ -844,16 +643,16 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 		// Key press, check for arrow keys to do cube rotation.
 	case WM_KEYDOWN:
 	{
-					   if (wParam == VK_UP || wParam == VK_NUMPAD8)
+					   if (wParam == VK_UP )//|| wParam == VK_NUMPAD8)
 						   xRot -= 5.0f;
 
-					   if (wParam == VK_DOWN || wParam == VK_NUMPAD2)
+					   if (wParam == VK_DOWN )//|| wParam == VK_NUMPAD2)
 						   xRot += 5.0f;
 
-					   if (wParam == VK_LEFT || wParam == VK_NUMPAD4)
+					   if (wParam == VK_LEFT )//|| wParam == VK_NUMPAD4)
 						   yRot -= 5.0f;
 
-					   if (wParam == VK_RIGHT || wParam == VK_NUMPAD6)
+					   if (wParam == VK_RIGHT )//|| wParam == VK_NUMPAD6)
 						   yRot += 5.0f;
 
 					   const float translateScene = 30.0f;
@@ -942,63 +741,3 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 
 	return (0L);
 }
-
-
-
-#pragma region dialog
-// Dialog procedure.
-BOOL APIENTRY AboutDlgProc(HWND hDlg, UINT message, UINT wParam, LONG lParam)
-{
-
-	switch (message)
-	{
-		// Initialize the dialog box
-	case WM_INITDIALOG:
-	{
-						  int i;
-						  GLenum glError;
-
-						  SetDlgItemText(hDlg, 143, LS "Authors: Kamil Lopuszanski, Patryk Mendrala");
-
-						  // glGetString demo
-						  SetDlgItemText(hDlg, IDC_OPENGL_VENDOR, (LPCSTR)glGetString(GL_VENDOR));
-						  SetDlgItemText(hDlg, IDC_OPENGL_RENDERER, (LPCSTR)glGetString(GL_RENDERER));
-						  SetDlgItemText(hDlg, IDC_OPENGL_VERSION, (LPCSTR)glGetString(GL_VERSION));
-						  SetDlgItemText(hDlg, IDC_OPENGL_EXTENSIONS, (LPCSTR)glGetString(GL_EXTENSIONS));
-
-						  // gluGetString demo
-						  SetDlgItemText(hDlg, IDC_GLU_VERSION, (LPCSTR)gluGetString(GLU_VERSION));
-						  SetDlgItemText(hDlg, IDC_GLU_EXTENSIONS, (LPCSTR)gluGetString(GLU_EXTENSIONS));
-
-
-						  // Display any recent error messages
-						  i = 0;
-						  do {
-							  glError = glGetError();
-							  SetDlgItemText(hDlg, IDC_ERROR1 + i, (LPCSTR)gluErrorString(glError));
-							  i++;
-						  } while (i < 6 && glError != GL_NO_ERROR);
-
-
-						  return (TRUE);
-	}
-		break;
-
-		// Process command messages
-	case WM_COMMAND:
-	{
-					   // Validate and Make the changes
-					   if (LOWORD(wParam) == IDOK)
-						   EndDialog(hDlg, TRUE);
-	}
-		break;
-
-		// Closed from sysbox
-	case WM_CLOSE:
-		EndDialog(hDlg, TRUE);
-		break;
-	}
-
-	return FALSE;
-}
-#pragma endregion dialog
