@@ -64,6 +64,13 @@ static GLfloat nRange = 1900.0f;
 
 static bool trajectoryVisible = true;
 
+static GLdouble camEye[3] = { 0, 0, 0 }, //default
+	camCenter[3] = { 0, 0, -40 },		//default
+	camUp[3] = { 0, 55, 0 };			//default
+/*static GLdouble camEye[3] = { 430, 20, -230 },
+camCenter[3] = { 400, -10, -40 },
+camUp[3] = { 5, 55, 370 };*/
+
 #pragma endregion globals
 
 
@@ -261,9 +268,6 @@ void light()
 	//glEnable(GL_LIGHT0);
 }
 
-static GLdouble camEye[3] = { 430, 20, -230 }, 
-camCenter[3] = { 400, -10, -40 },
-camUp[3] = { 5, 55, 370 };
 // Called to draw scene
 void RenderScene(void)
 {

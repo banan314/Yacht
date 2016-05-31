@@ -8,8 +8,8 @@
 
 void marina(void)
 {
-	glPushMatrix();
-	glTranslatef(0, 0, 0.01);
+	//glPushMatrix();
+	//glTranslatef(0, 0, 0.01);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	{
 		//Kolor portu
@@ -866,5 +866,5 @@ void marina(void)
 		glVertex3fv(m27);
 		glEnd();
 	}
-	glPopMatrix();
+	//glPopMatrix();
 }
