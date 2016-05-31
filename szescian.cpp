@@ -17,6 +17,7 @@
 #include "Physics.h"
 #include "shapeUtils.h"
 #include "Marina.h"
+#include "Tree.h"
 
 #include "windowsUtilities.h"
 
@@ -35,7 +36,7 @@ static LPCTSTR lpszAppName = LPCTSTR("GL Template");
 static HINSTANCE hInstance;
 
 // Rotation and translation amounts
-static GLfloat xRot = -90.0f;
+static GLfloat xRot = 0.0f;
 static GLfloat yRot = 0.0f;
 static GLfloat xTrans, yTrans, zTrans;
 
