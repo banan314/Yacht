@@ -3,7 +3,7 @@
 #include <windows.h>            // Window defines
 #include <gl\gl.h>              // OpenGL
 #include <gl\glu.h>             // GLU library
-#include "resource.h"           // About box resource identifiers.
+#include "../resource.h"           // About box resource identifiers.
 
 //#include "shapeUtils.h"
 
@@ -24,6 +24,7 @@ void Boat::renderAll()
 
 void Boat::renderAll(float scale)
 {
+	scale *= absoluteScalingFactor;
 	if (scale == 0.0)
 	{
 		renderAll(); return;
@@ -46,6 +47,7 @@ void Boat::renderMirror()
 
 void Boat::renderMirror(float scale)
 {
+	scale *= absoluteScalingFactor;
 	//mirror everything from top do bottom
 	const GLfloat m[16] = { 1, 0, 0, 0, 
 							0, 1, 0, 0, 

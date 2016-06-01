@@ -45,7 +45,7 @@ std::array<GLfloat, 200> navigation[3];
 GLfloat navAngle[200];
 Physics balt17; //yacht physics
 float windFloatFooVar[3] = { 0, 0, 0.0f }; //variable needed for AntTweakBar to work
-float boatScale = 2.4; //scale factor of boat
+float boatScale = 1.0; //scale factor of boat
 
 //time constants
 int time = 0; 
@@ -65,13 +65,15 @@ static GLfloat nRange = 1900.0f;
 
 static bool trajectoryVisible = true;
 
-static GLdouble camEye[3] = { 0, 0, 0 }, //default
-	camCenter[3] = { 0, 0, -40 },		//default
-	camUp[3] = { 0, 55, 0 };			//default
-/*static GLdouble camEye[3] = { 430, 20, -230 },
-camCenter[3] = { 400, -10, -40 },
-camUp[3] = { 5, 55, 370 };*/
-
+//cameras
+typedef enum { CAMERA_YACHT = 0, CAMERA_GENERAL = 1} eCamera;
+eCamera eGlobalCamera = CAMERA_GENERAL;
+#define NUM_CAMERAS 2
+typedef struct { public: GLdouble eye[3], center[3], up[3]; } Camera;
+Camera globalCamera[NUM_CAMERAS]  //{ GLdouble eye[3] = { 0, 0, 0 }, //default
+		//GLdouble center[3] = { 0, 0, -40 },		//default
+		//GLdouble up[3] = { 0, 55, 0 } };			//default
+;
 #pragma endregion globals
 
 
@@ -291,9 +293,9 @@ void RenderScene(void)
 	/////////////////////////////////////////////////////////////////
 
 	////ustawienie kamery
-	gluLookAt(camEye[0], camEye[1], camEye[2],
-		camCenter[0], camCenter[1], camCenter[2],
-		camUp[0], camUp[1], camUp[2]
+	gluLookAt(globalCamera[eGlobalCamera].eye[0], globalCamera[eGlobalCamera].eye[1], globalCamera[eGlobalCamera].eye[2],
+		globalCamera[eGlobalCamera].center[0], globalCamera[eGlobalCamera].center[1], globalCamera[eGlobalCamera].center[2],
+		globalCamera[eGlobalCamera].up[0], globalCamera[eGlobalCamera].up[1], globalCamera[eGlobalCamera].up[2]
 		);
 
 	//Sposób na odróŸnienie "przedniej" i "tylniej" œciany wielok¹ta:
@@ -516,6 +518,19 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 		GetWindowRect(hWnd, &rc);
 		TwWindowSize(rc.right - rc.left, rc.top - rc.bottom);
 		
+
+		//initialize camera
+		for (int i = 0; i < 3; i++)
+		{
+			globalCamera[CAMERA_GENERAL].eye[i] = (new GLdouble[3] { 0, 0, 0 })[i];
+			globalCamera[CAMERA_GENERAL].center[i] = (new GLdouble[3] { 0, 0, -40 })[i];
+			globalCamera[CAMERA_GENERAL].up[i] = (new GLdouble[3] { 0, 55, 0 })[i];
+			globalCamera[CAMERA_YACHT].eye[i] = (new GLdouble[3] { 430, 20, -230 })[i];
+			globalCamera[CAMERA_YACHT].center[i] = (new GLdouble[3] { 400, -10, -40 })[i];
+			globalCamera[CAMERA_YACHT].up[i] = (new GLdouble[3] { 5, 55, 370 })[i];
+		}
+
+
 		//------------------------------------------
 		//AntTweakBar routines
 		//------------------------------------------
@@ -532,29 +547,42 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 			"label='scale boat' min=0.1 max=15 step=0.1");
 		TwAddVarRW(bar, "AutoRotate", TW_TYPE_BOOL32, &trajectoryVisible,
 			" label='trajectory' key=space help='Toggle visibility of path trajectory' ");
+		
+		// Add the enum variable 'globalCamera' to 'bar'
+		// (before adding an enum variable, its enum type must be declared to AntTweakBar as follow)
+		{
+			// ShapeEV associates Shape enum values with labels that will be displayed instead of enum values
+			TwEnumVal cameraEV[NUM_CAMERAS] = { { CAMERA_YACHT, "Yacht" }, { CAMERA_GENERAL, "Plan ogólny" } };
+			// Create a type for the enum cameraEV
+			TwType shapeType = TwDefineEnum("CameraType", cameraEV, NUM_CAMERAS);
+			// add 'g_CurrentShape' to 'bar': this is a variable of type ShapeType. Its key shortcuts are [<] and [>].
+			TwAddVarRW(bar, "Kamera", shapeType, &globalCamera,
+				" keyIncr='<' keyDecr='>' help='Change camera view.' ");
+		}
 
 		TwBar *camera;
 		camera = TwNewBar("Camera");
-		TwAddVarRW(camera, "eyex", TW_TYPE_DOUBLE, (camEye),
+		TwAddVarRW(camera, "eyex", TW_TYPE_DOUBLE, (globalCamera[eGlobalCamera].eye),
 			"label='eye x' min=-2000 max=2000 keyIncr=1 keyDecr=CTRL+1 step=1");
-		TwAddVarRW(camera, "eyey", TW_TYPE_DOUBLE, (camEye+1),
+		TwAddVarRW(camera, "eyey", TW_TYPE_DOUBLE, (globalCamera[eGlobalCamera].eye+1),
 			"label='eye y' min=-2000 max=2000 keyIncr=2 keyDecr=CTRL+2 step=1");
-		TwAddVarRW(camera, "eyez", TW_TYPE_DOUBLE, (camEye+2),
+		TwAddVarRW(camera, "eyez", TW_TYPE_DOUBLE, (globalCamera[eGlobalCamera].eye+2),
 			"label='eye z' min=-2000 max=2000 keyIncr=3 keyDecr=CTRL+3 step=1");
-		TwAddVarRW(camera, "centerx", TW_TYPE_DOUBLE, (camCenter),
+		TwAddVarRW(camera, "centerx", TW_TYPE_DOUBLE, (globalCamera[eGlobalCamera].center),
 			"label='center x' min=-500 max=500 keyIncr=4 keyDecr=CTRL+4 step=10");
-		TwAddVarRW(camera, "centery", TW_TYPE_DOUBLE, (camCenter+1),
+		TwAddVarRW(camera, "centery", TW_TYPE_DOUBLE, (globalCamera[eGlobalCamera].center+1),
 			"label='center y' min=-500 max=500 keyIncr=5 keyDecr=CTRL+5 step=10");
-		TwAddVarRW(camera, "centerz", TW_TYPE_DOUBLE, (camCenter + 2),
+		TwAddVarRW(camera, "centerz", TW_TYPE_DOUBLE, (globalCamera[eGlobalCamera].center + 2),
 			"label='center z' min=-500 max=500 keyIncr=6 keyDecr=CTRL+6 step=10");
-		TwAddVarRW(camera, "upx", TW_TYPE_DOUBLE, (camUp),
+		TwAddVarRW(camera, "upx", TW_TYPE_DOUBLE, (globalCamera[eGlobalCamera].up),
 			"label='up x' min=-500 max=500 keyIncr=7 keyDecr=CTRL+7 step=10");
-		TwAddVarRW(camera, "upy", TW_TYPE_DOUBLE, (camUp+1),
+		TwAddVarRW(camera, "upy", TW_TYPE_DOUBLE, (globalCamera[eGlobalCamera].up+1),
 			"label='up y' min=-500 max=500 keyIncr=8 keyDecr=CTRL+8 step=10");
-		TwAddVarRW(camera, "upz", TW_TYPE_DOUBLE, (camUp+2),
+		TwAddVarRW(camera, "upz", TW_TYPE_DOUBLE, (globalCamera[eGlobalCamera].up+2),
 			"label='up z' min=-500 max=500 keyIncr=9 keyDecr=CTRL+9 step=10");
 		//------------------------------------------
 
+		
 
 		break;
 

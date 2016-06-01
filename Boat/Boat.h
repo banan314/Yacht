@@ -4,6 +4,7 @@ class Boat
 private:
 	float posX, posY, posZ;
 	float mass;
+	const float absoluteScalingFactor = 2.4;
 protected:
 	void kadlub();
 	void dziob();
