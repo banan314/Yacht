@@ -229,8 +229,9 @@ void yacht(std::array<GLfloat, n> navigation[3], int i)
 	glRotatef(navAngle[i] * 180 / GL_PI, 0.0, 0.0, 1.0);
 	if (boatScale != 0.0)
 	{
-		yacht.renderAll(boatScale);
-		yacht.renderMirror(boatScale);
+		//yacht.renderAll(boatScale);
+		yacht.renderBlender(boatScale);
+		//yacht.renderMirror(boatScale);
 	}
 
 	else
@@ -758,7 +759,7 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 	{
 		//change the position of the boat
 						
-				if (time < navigation[0].size() - 1)
+				if ((unsigned)time < navigation[0].size() - 1)
 					time++;
 				else
 					time = 0;

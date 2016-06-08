@@ -6,6 +6,7 @@
 #include "../resource.h"           // About box resource identifiers.
 
 //#include "shapeUtils.h"
+#include "yachtBlender.h"
 
 Boat::Boat()
 {
@@ -57,6 +58,21 @@ void Boat::renderMirror(float scale)
 	glMultMatrixf(m);
 	renderAll(scale);
 	glPopMatrix();
+}
+
+void Boat::renderBlender(float scale)
+{
+	glColor3i(185, 122, 87); //brown
+	scale *= absoluteScalingFactor;
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3, GL_FLOAT, 0, yachtVertices);
+	int i;
+	glBegin(GL_TRIANGLES);
+	for (i = 0; i < yachtVerticeNumber; i++)
+		glArrayElement(i);
+	glEnd();
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void drawCuboid(GLfloat[6]);

@@ -4,7 +4,7 @@ class Boat
 private:
 	float posX, posY, posZ;
 	float mass;
-	const float absoluteScalingFactor = 2.4;
+	const float absoluteScalingFactor = 2.4f;
 protected:
 	void kadlub();
 	void dziob();
@@ -20,6 +20,7 @@ public:
 	void renderAll(float scale);
 	void renderMirror(float scale);
 	void renderMirror();
+	void renderBlender(float);
 	~Boat();
 };
 

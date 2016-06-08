@@ -3,7 +3,7 @@
 #include <windows.h>            // Window defines
 #include <gl\gl.h>              // OpenGL
 #include <gl\glu.h>             // GLU library
-#include "resource.h"           // About box resource identifiers.
+#include "../resource.h"           // About box resource identifiers.
 
 
 Tree::Tree()
