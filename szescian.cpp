@@ -1,7 +1,7 @@
-#define _CRT_SECURE_NO_WARNINGS
+ï»¿#define _CRT_SECURE_NO_WARNINGS
 #include <windows.h>            // Window defines
-#include "gl\glew.h"
-#include "GL\freeglut.h"
+//#include "gl\glew.h"
+//#include "GL\freeglut.h"
 #include "gl\gl.h"              // OpenGL
 #include "gl\glu.h"             // GLU library
 #define LS (LPCSTR)
@@ -20,6 +20,8 @@
 #include "Tree.h"
 
 #include "windowsUtilities.h"
+
+#include "stdafx.h" //blender
 
 #include <array>
 
@@ -55,7 +57,7 @@ static GLsizei lastHeight;
 static GLsizei lastWidth;
 
 // Opis tekstury
-BITMAPINFOHEADER	bitmapInfoHeader;	// nag³ówek obrazu
+BITMAPINFOHEADER	bitmapInfoHeader;	// nagÂ³Ã³wek obrazu
 unsigned char*		bitmapData;			// dane tekstury
 unsigned char*		waterBitmapData;			// dane tekstury
 unsigned int		texture[2];			// obiekt tekstury
@@ -76,6 +78,125 @@ Camera globalCamera[NUM_CAMERAS]  //{ GLdouble eye[3] = { 0, 0, 0 }, //default
 ;
 #pragma endregion globals
 
+//yacht object
+Boat yacht;
+
+//blender essentials
+float               g_maxAnisotrophy;
+GLuint LoadTexture(const char *pszFilename)
+{
+	GLuint id = 0;
+	Bitmap bitmap;
+	BITMAPINFOHEADER	bitmapInfoHeader;	// nagÅ‚Ã³wek obrazu
+	//unsigned char* bitmapData = LoadBitmapFile(pszFilename, &bitmapInfoHeader);
+
+	if (bitmap.loadPicture(pszFilename))
+	{
+		// The Bitmap class loads images and orients them top-down.
+		// OpenGL expects bitmap images to be oriented bottom-up.
+		bitmap.flipVertical();
+
+		glGenTextures(1, &id);
+		glBindTexture(GL_TEXTURE_2D, id);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+		if (g_maxAnisotrophy > 1.0f)
+		{
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
+				g_maxAnisotrophy);
+		}
+
+		gluBuild2DMipmaps(GL_TEXTURE_2D, 4, bitmap.width, bitmap.height, GL_BGRA_EXT, GL_UNSIGNED_BYTE, bitmap.getPixels());
+		//gluBuild2DMipmaps(GL_TEXTURE_2D, 4, bitmapInfoHeader.biWidth, bitmapInfoHeader.biHeight, GL_BGRA_EXT, GL_UNSIGNED_BYTE, bitmapData);
+	}
+
+	//free(bitmapData);
+
+	return id;
+}
+
+HGLRC Init(HDC hDC)
+{
+	static int g_msaaSamples;
+	HGLRC hRC_ret = 0;
+	int pf = 0;
+	PIXELFORMATDESCRIPTOR pfd = { 0 };
+
+	pfd.nSize = sizeof(pfd);
+	pfd.nVersion = 1;
+	pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+	pfd.iPixelType = PFD_TYPE_RGBA;
+	pfd.cColorBits = 24;
+	pfd.cDepthBits = 16;
+	pfd.iLayerType = PFD_MAIN_PLANE;
+
+	if (IsWindowsVistaOrGreater())
+		pfd.dwFlags |= PFD_SUPPORT_COMPOSITION;
+
+	ChooseBestMultiSampleAntiAliasingPixelFormat(pf, g_msaaSamples);
+
+	if (!pf)
+		pf = ChoosePixelFormat(hDC, &pfd);
+
+	if (!SetPixelFormat(hDC, pf, &pfd))
+		throw std::runtime_error("SetPixelFormat() failed.");
+
+	// Create palette if needed
+	hPalette = GetOpenGLPalette(hDC);
+
+	if (!(hRC_ret = wglCreateContext(hDC)))
+		throw std::runtime_error("wglCreateContext() failed.");
+
+	if (!wglMakeCurrent(hDC, hRC_ret))
+		throw std::runtime_error("wglMakeCurrent() failed.");
+
+	GL2Init();
+
+	ModelOBJ::init();
+
+	// Check for GL_EXT_texture_filter_anisotropic support.
+	if (ExtensionSupported("GL_EXT_texture_filter_anisotropic", hDC))
+		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &g_maxAnisotrophy);
+	else
+		g_maxAnisotrophy = 1.0f;
+
+	return hRC_ret;
+}
+
+bool ExtensionSupported(const char *pszExtensionName, HDC hDC)
+{
+	static const char *pszGLExtensions = 0;
+	static const char *pszWGLExtensions = 0;
+
+	if (!pszGLExtensions)
+		pszGLExtensions = reinterpret_cast<const char *>(glGetString(GL_EXTENSIONS));
+
+	if (!pszWGLExtensions)
+	{
+		// WGL_ARB_extensions_string.
+
+		typedef const char *(WINAPI * PFNWGLGETEXTENSIONSSTRINGARBPROC)(HDC);
+
+		PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB =
+			reinterpret_cast<PFNWGLGETEXTENSIONSSTRINGARBPROC>(
+			wglGetProcAddress("wglGetExtensionsStringARB"));
+
+		if (wglGetExtensionsStringARB)
+			pszWGLExtensions = wglGetExtensionsStringARB(hDC);
+	}
+
+	if (!strstr(pszGLExtensions, pszExtensionName))
+	{
+		if (!strstr(pszWGLExtensions, pszExtensionName))
+			return false;
+	}
+
+	return true;
+}
 
 // Change viewing volume and viewport.  Called when window is resized
 void ChangeSize(GLsizei w, GLsizei h)
@@ -213,9 +334,8 @@ void setPath()
 
 
 template<size_t n>
-void yacht(std::array<GLfloat, n> navigation[3], int i)
+void yachtRender(std::array<GLfloat, n> navigation[3], int i)
 {
-	Boat yacht;
 	yacht.setPosition(0.0, 0.0, 0.0);
 
 
@@ -229,9 +349,9 @@ void yacht(std::array<GLfloat, n> navigation[3], int i)
 	glRotatef(navAngle[i] * 180 / GL_PI, 0.0, 0.0, 1.0);
 	if (boatScale != 0.0)
 	{
-		//yacht.renderAll(boatScale);
-		yacht.renderBlender(boatScale);
-		//yacht.renderMirror(boatScale);
+		yacht.renderAll(boatScale);
+		//yacht.renderBlender(boatScale);
+		yacht.renderMirror(boatScale);
 	}
 
 	else
@@ -299,7 +419,7 @@ void RenderScene(void)
 		globalCamera[eGlobalCamera].up[0], globalCamera[eGlobalCamera].up[1], globalCamera[eGlobalCamera].up[2]
 		);
 
-	//Sposób na odróŸnienie "przedniej" i "tylniej" œciany wielok¹ta:
+	//SposÃ³b na odrÃ³Å¸nienie "przedniej" i "tylniej" Å“ciany wielokÂ¹ta:
 	glPolygonMode(GL_BACK, GL_LINE);
 
 	//Materials
@@ -315,7 +435,7 @@ void RenderScene(void)
 	//yacht.setPosition(0.0, 0.0, 0.0);
 	//yacht.renderAll();
 
-	//Rysowanie obiektów:
+	//Rysowanie obiektÃ³w:
 	marina();
 
 
@@ -324,7 +444,7 @@ void RenderScene(void)
 
 	if (trajectoryVisible)
 		swimming<200>(navigation); //draw trajectory of boat swimming
-	yacht<200>(navigation, time); //swim
+	yachtRender<200>(navigation, time); //swim
 
 	glEnable(GL_BLEND);                         // Enable Blending (Otherwise The Reflected Object Wont Show)
 	//glDisable(GL_LIGHTING);                         // Since We Use Blending, We Disable Lighting
@@ -394,17 +514,17 @@ int APIENTRY WinMain(HINSTANCE       hInst,
 	if (hWnd == NULL)
 		return FALSE;
 
-	//https://codingmisadventures.wordpress.com/2009/03/10/retrieving-command-line-parameters-from-winmain-in-win32/
-	LPWSTR *szArgList;
-	int *argCount = new int;
+	////https://codingmisadventures.wordpress.com/2009/03/10/retrieving-command-line-parameters-from-winmain-in-win32/
+	//LPWSTR *szArgList;
+	//int *argCount = new int;
 
-	szArgList = CommandLineToArgvW((LPCWSTR)GetCommandLine(), argCount);
-	if (szArgList == NULL)
-	{
-		MessageBox(hWnd, (LPCSTR)"Unable to parse command line", (LPCSTR)"Error", MB_OK);
-		return 10;
-	}
-	glutInit(argCount, (char**)szArgList);
+	//szArgList = CommandLineToArgvW((LPCWSTR)GetCommandLine(), argCount);
+	//if (szArgList == NULL)
+	//{
+	//	MessageBox(hWnd, (LPCSTR)"Unable to parse command line", (LPCSTR)"Error", MB_OK);
+	//	return 10;
+	//}
+	//glutInit(argCount, (char**)szArgList);
 	
 	// Very important!  This initializes the entry points in the OpenGL driver so we can 
 	// call all the functions in the API.
@@ -414,7 +534,7 @@ int APIENTRY WinMain(HINSTANCE       hInst,
 		return 1;
 	}*/
 
-	LocalFree(szArgList);
+	//LocalFree(szArgList);
 
 	// Display the window
 	ShowWindow(hWnd, SW_SHOW);
@@ -454,6 +574,8 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 	case WM_CREATE:
 		// Store the device context
 		hDC = GetDC(hWnd);
+
+		hRC = Init(hDC);
 
 		//set up physics
 		balt17.setPos(new float[3] {0.0, 0.0, 0.0});
@@ -510,7 +632,7 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, bitmapInfoHeader.biWidth,
 			bitmapInfoHeader.biHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, waterBitmapData);
 
-		// ustalenie sposobu mieszania tekstury z t³em
+		// ustalenie sposobu mieszania tekstury z tÂ³em
 		glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
 		//AntTweakBar initialization
@@ -553,7 +675,7 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 		// (before adding an enum variable, its enum type must be declared to AntTweakBar as follow)
 		{
 			// ShapeEV associates Shape enum values with labels that will be displayed instead of enum values
-			TwEnumVal cameraEV[NUM_CAMERAS] = { { CAMERA_YACHT, "Yacht" }, { CAMERA_GENERAL, "Plan ogólny" } };
+			TwEnumVal cameraEV[NUM_CAMERAS] = { { CAMERA_YACHT, "Yacht" }, { CAMERA_GENERAL, "Plan ogÃ³lny" } };
 			// Create a type for the enum cameraEV
 			TwType shapeType = TwDefineEnum("CameraType", cameraEV, NUM_CAMERAS);
 			// add 'g_CurrentShape' to 'bar': this is a variable of type ShapeType. Its key shortcuts are [<] and [>].

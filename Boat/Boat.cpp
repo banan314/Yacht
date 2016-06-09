@@ -6,11 +6,20 @@
 #include "../resource.h"           // About box resource identifiers.
 
 //#include "shapeUtils.h"
-#include "yachtBlender.h"
+//#include "../blender/bitmap.h"
+//#include "../blender/gl2.h"
+//#include "../blender/model_obj.h"
+//#include "../blender/WGL_ARB_multisample.h"
+#include "../stdafx.h"
+
+#include <sstream>
+
+ModelOBJ yachtBlender;
 
 Boat::Boat()
 {
 	mass = 500.0; //kg
+	yachtBlender.load("blender/yacht.objblender");
 }
 
 void Boat::renderAll()
@@ -64,15 +73,14 @@ void Boat::renderBlender(float scale)
 {
 	glColor3i(185, 122, 87); //brown
 	scale *= absoluteScalingFactor;
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3, GL_FLOAT, 0, yachtVertices);
-	int i;
-	glBegin(GL_TRIANGLES);
-	for (i = 0; i < yachtVerticeNumber; i++)
-		glArrayElement(i);
-	glEnd();
-	glDisableClientState(GL_VERTEX_ARRAY);
+	if (scale == 0.0)
+	{
+		renderAll(); return;
+	}
+	glPushMatrix();
+		glScalef(scale, scale, scale);
+		yachtBlender.render();
+	glPopMatrix();
 }
 
 void drawCuboid(GLfloat[6]);
