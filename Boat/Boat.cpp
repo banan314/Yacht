@@ -14,12 +14,20 @@
 
 #include <sstream>
 
+#define GL_PI 3.14
+
 ModelOBJ yachtBlender;
 
 Boat::Boat()
 {
 	mass = 500.0; //kg
-	yachtBlender.load("blender/yacht.objblender");
+	//yachtBlender.load("blender/yacht.objblender");
+	xminOrigin = -(xmaxOrigin = 40) - 5; //min = -45, max = 40
+	yminOrigin = -(ymaxOrigin = 20);
+	xmin = xminOrigin;
+	xmax = xmaxOrigin;
+	ymin = yminOrigin;
+	ymax = ymaxOrigin;
 }
 
 void Boat::renderAll()
@@ -41,6 +49,7 @@ void Boat::renderAll(float scale)
 	}
 	glPushMatrix();
 	glScalef(scale, scale, scale);
+	glRotatef(angle * 180 / GL_PI, 0.0, 0.0, 1.0);
 	renderAll();
 	glPopMatrix();
 }
@@ -51,6 +60,7 @@ void Boat::renderMirror()
 	const GLfloat m[16] = {  1, 0, 0, 0 ,  0, 1, 0, 0 ,  0, 0, -1, 0 ,  0, 0, 0, 1  };
 	glPushMatrix();
 	glMultMatrixf(m);
+	glTranslatef(0, 0, -0.01+posZ);
 	renderAll();
 	glPopMatrix();
 }
@@ -65,22 +75,23 @@ void Boat::renderMirror(float scale)
 							0, 0, 0, 1 };
 	glPushMatrix();
 	glMultMatrixf(m);
+	glTranslatef(0, 0, -0.01);
 	renderAll(scale);
 	glPopMatrix();
 }
 
 void Boat::renderBlender(float scale)
 {
-	glColor3i(185, 122, 87); //brown
-	scale *= absoluteScalingFactor;
-	if (scale == 0.0)
-	{
-		renderAll(); return;
-	}
-	glPushMatrix();
-		glScalef(scale, scale, scale);
-		yachtBlender.render();
-	glPopMatrix();
+	//glColor3i(185, 122, 87); //brown
+	//scale *= absoluteScalingFactor;
+	//if (scale == 0.0)
+	//{
+	//	renderAll(); return;
+	//}
+	//glPushMatrix();
+	//	glScalef(scale, scale, scale);
+	//	yachtBlender.render();
+	//glPopMatrix();
 }
 
 void drawCuboid(GLfloat[6]);
@@ -311,6 +322,11 @@ void Boat::setPosition(float x, float y)
 {
 	posX = x;
 	posY = y;
+
+	xmax = xmaxOrigin * cos(getAngle());
+	ymax = ymaxOrigin * sin(getAngle());
+	xmin = xminOrigin * cos(getAngle());
+	ymin = yminOrigin * sin(getAngle());
 }
 
 void Boat::setPosition(float x, float y, float z)
@@ -318,6 +334,11 @@ void Boat::setPosition(float x, float y, float z)
 	posX = x;
 	posY = y;
 	posZ = z;
+}
+
+bool Boat::isCollision(float przyladek)
+{
+	return (przyladek > ymin);
 }
 
 Boat::~Boat()
