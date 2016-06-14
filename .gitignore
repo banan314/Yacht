@@ -59,7 +59,7 @@ build/
 *_p.c
 *.ilk
 *.meta
-*.obj
+#*.obj
 *.pch
 *.pdb
 *.pgc
@@ -248,4 +248,10 @@ pip-log.txt
 *.synctex.gz
 *.bib
 glew.h
+<<<<<<< HEAD
 glew32s.lib
+=======
+glew32s.lib
+
+*.js
+>>>>>>> refs/remotes/origin/version-4

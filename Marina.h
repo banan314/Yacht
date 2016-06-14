@@ -4,12 +4,23 @@
 #include <gl\gl.h>              // OpenGL
 #include <gl\glu.h>             // GLU library
 
+
+
 void marina(void)
 {
+	//glPushMatrix();
+	//glTranslatef(0, 0, 0.01);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	{
 		//Kolor portu
 		GLfloat portr, portg, portb;
+
+		GLfloat ziemiar, ziemiag, ziemiab;
+
+		ziemiar = 1.0f;
+		ziemiag = 0.0;
+		ziemiab = 1.0f;
+
 
 		portr = 0.5f;
 		portg = 0.5f;
@@ -272,7 +283,8 @@ void marina(void)
 		// Sciany skladowe
 
 		//s1
-		glColor3f(1.0f, 0.0f, 1.0f);
+		glColor3f(ziemiar, ziemiag, ziemiab);
+
 		glBegin(GL_POLYGON);
 		glVertex3fv(m01);
 		glVertex3fv(m02);
@@ -282,7 +294,8 @@ void marina(void)
 		glEnd();
 
 		//s2
-		glColor3f(1.0f, 0.0f, 1.0f);
+
+
 		glBegin(GL_POLYGON);
 		glVertex3fv(m06_1);
 		glVertex3fv(m03);
@@ -292,7 +305,7 @@ void marina(void)
 		glEnd();
 
 		//s3
-		glColor3f(1.0f, 0.0f, 1.0f);
+
 		glBegin(GL_POLYGON);
 		glVertex3fv(m46_1);
 		glVertex3fv(m06_1);
@@ -303,7 +316,7 @@ void marina(void)
 		glEnd();
 
 		//s4
-		glColor3f(1.0f, 0.0f, 1.0f);
+
 		glBegin(GL_POLYGON);
 		glVertex3fv(m46_2);
 		glVertex3fv(m08);
@@ -312,7 +325,7 @@ void marina(void)
 		glEnd();
 
 		//s5
-		glColor3f(1.0f, 0.0f, 1.0f);
+
 		glBegin(GL_POLYGON);
 		glVertex3fv(m46_3);
 		glVertex3fv(m09);
@@ -321,7 +334,6 @@ void marina(void)
 		glEnd();
 
 		//s6
-		glColor3f(1.0f, 0.0f, 1.0f);
 		glBegin(GL_POLYGON);
 		glVertex3fv(m09);
 		glVertex3fv(m10);
@@ -330,7 +342,6 @@ void marina(void)
 		glEnd();
 
 		//s7
-		glColor3f(1.0f, 0.0f, 1.0f);
 		glBegin(GL_POLYGON);
 		glVertex3fv(m10);
 		glVertex3fv(m11);
@@ -340,7 +351,6 @@ void marina(void)
 		glEnd();
 
 		//s8
-		glColor3f(1.0f, 0.0f, 1.0f);
 		glBegin(GL_POLYGON);
 		glVertex3fv(m46_4);
 		glVertex3fv(m15);
@@ -349,7 +359,6 @@ void marina(void)
 		glEnd();
 
 		//s9
-		glColor3f(1.0f, 0.0f, 1.0f);
 		glBegin(GL_POLYGON);
 		glVertex3fv(m46_5);
 		glVertex3fv(m16);
@@ -359,7 +368,6 @@ void marina(void)
 		glEnd();
 
 		//s10
-		glColor3f(1.0f, 0.0f, 1.0f);
 		glBegin(GL_POLYGON);
 		glVertex3fv(m46_6);
 		glVertex3fv(m18);
@@ -370,7 +378,6 @@ void marina(void)
 		glEnd();
 
 		//s11
-		glColor3f(1.0f, 0.0f, 1.0f);
 		glBegin(GL_POLYGON);
 		glVertex3fv(m46_7);
 		glVertex3fv(m21);
@@ -381,7 +388,6 @@ void marina(void)
 		glEnd();
 
 		//s12
-		glColor3f(1.0f, 0.0f, 1.0f);
 		glBegin(GL_POLYGON);
 		glVertex3fv(m46_8);
 		glVertex3fv(m24);
@@ -392,7 +398,6 @@ void marina(void)
 		glEnd();
 
 		//s13
-		glColor3f(1.0f, 0.0f, 1.0f);
 		glBegin(GL_POLYGON);
 		glVertex3fv(m46_9);
 		glVertex3fv(m27);
@@ -402,7 +407,6 @@ void marina(void)
 		glEnd();
 
 		//s14
-		glColor3f(1.0f, 0.0f, 1.0f);
 		glBegin(GL_POLYGON);
 		glVertex3fv(m46_10);
 		glVertex3fv(m29);
@@ -411,7 +415,6 @@ void marina(void)
 		glEnd();
 
 		//s15
-		glColor3f(1.0f, 0.0f, 1.0f);
 		glBegin(GL_POLYGON);
 		glVertex3fv(m46_11);
 		glVertex3fv(m30);
@@ -420,7 +423,10 @@ void marina(void)
 		glEnd();
 
 		//s16
-		glColor3f(1.0f, 0.0f, 1.0f);
+		//(1.0f, 0.0f, 1.0f);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(m45_1);
 		glVertex3fv(m30);
@@ -430,7 +436,10 @@ void marina(void)
 		glEnd();
 
 		//s17
-		glColor3f(1.0f, 0.0f, 1.0f);
+		//(1.0f, 0.0f, 1.0f);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(m45_2);
 		glVertex3fv(m32);
@@ -441,7 +450,10 @@ void marina(void)
 		glEnd();
 
 		//s18
-		glColor3f(1.0f, 0.0f, 1.0f);
+		//(1.0f, 0.0f, 1.0f);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(m45_3);
 		glVertex3fv(m35);
@@ -450,7 +462,10 @@ void marina(void)
 		glEnd();
 
 		//s19
-		glColor3f(1.0f, 0.0f, 1.0f);
+		//(1.0f, 0.0f, 1.0f);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(m45_4);
 		glVertex3fv(m36);
@@ -460,7 +475,10 @@ void marina(void)
 		glEnd();
 
 		//s20
-		glColor3f(1.0f, 0.0f, 1.0f);
+		//(1.0f, 0.0f, 1.0f);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(m36);
 		glVertex3fv(m37);
@@ -471,7 +489,10 @@ void marina(void)
 		glEnd();
 
 		//s21
-		glColor3f(1.0f, 0.0f, 1.0f);
+		//(1.0f, 0.0f, 1.0f);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(m45_5);
 		glVertex3fv(m42);
@@ -482,7 +503,10 @@ void marina(void)
 		//Œciany góra
 
 		//s1
-		glColor3f(1.0f, 0.0f, 1.0f);
+		//(1.0f, 0.0f, 1.0f);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(mg01);
 		glVertex3fv(mg02);
@@ -492,7 +516,10 @@ void marina(void)
 		glEnd();
 
 		//s2
-		glColor3f(1.0f, 0.0f, 1.0f);
+		//(1.0f, 0.0f, 1.0f);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(mg06_1);
 		glVertex3fv(mg03);
@@ -502,7 +529,10 @@ void marina(void)
 		glEnd();
 
 		//s3
-		glColor3f(1.0f, 0.0f, 1.0f);
+		//(1.0f, 0.0f, 1.0f);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(mg46_1);
 		glVertex3fv(mg06_1);
@@ -515,7 +545,7 @@ void marina(void)
 		//Port
 
 		//s4
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
 		glBegin(GL_POLYGON);
 		glVertex3fv(mg46_2);
 		glVertex3fv(mg08);
@@ -524,7 +554,10 @@ void marina(void)
 		glEnd();
 
 		//s5
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(mg46_3);
 		glVertex3fv(mg09);
@@ -533,7 +566,10 @@ void marina(void)
 		glEnd();
 
 		//s6
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(mg09);
 		glVertex3fv(mg10);
@@ -542,7 +578,10 @@ void marina(void)
 		glEnd();
 
 		//s7
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(mg10);
 		glVertex3fv(mg11);
@@ -552,7 +591,10 @@ void marina(void)
 		glEnd();
 
 		//s8
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(mg46_4);
 		glVertex3fv(mg15);
@@ -561,7 +603,10 @@ void marina(void)
 		glEnd();
 
 		//s9
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(mg46_5);
 		glVertex3fv(mg16);
@@ -571,7 +616,10 @@ void marina(void)
 		glEnd();
 
 		//s10
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(mg46_6);
 		glVertex3fv(mg18);
@@ -582,7 +630,10 @@ void marina(void)
 		glEnd();
 
 		//s11
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(mg46_7);
 		glVertex3fv(mg21);
@@ -593,7 +644,10 @@ void marina(void)
 		glEnd();
 
 		//s12
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(mg46_8);
 		glVertex3fv(mg24);
@@ -606,7 +660,10 @@ void marina(void)
 		//Port - Koniec
 
 		//s13
-		glColor3f(1.0f, 0.0f, 1.0f);
+		//(1.0f, 0.0f, 1.0f);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(mg46_9);
 		glVertex3fv(mg27);
@@ -616,7 +673,10 @@ void marina(void)
 		glEnd();
 
 		//s14
-		glColor3f(1.0f, 0.0f, 1.0f);
+		//(1.0f, 0.0f, 1.0f);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(mg46_10);
 		glVertex3fv(mg29);
@@ -625,7 +685,10 @@ void marina(void)
 		glEnd();
 
 		//s15
-		glColor3f(1.0f, 0.0f, 1.0f);
+		//(1.0f, 0.0f, 1.0f);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(mg46_11);
 		glVertex3fv(mg30);
@@ -634,7 +697,10 @@ void marina(void)
 		glEnd();
 
 		//s16
-		glColor3f(1.0f, 0.0f, 1.0f);
+		//(1.0f, 0.0f, 1.0f);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(mg45_1);
 		glVertex3fv(mg30);
@@ -644,7 +710,10 @@ void marina(void)
 		glEnd();
 
 		//s17
-		glColor3f(1.0f, 0.0f, 1.0f);
+		//(1.0f, 0.0f, 1.0f);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(mg45_2);
 		glVertex3fv(mg32);
@@ -655,7 +724,10 @@ void marina(void)
 		glEnd();
 
 		//s18
-		glColor3f(1.0f, 0.0f, 1.0f);
+		//(1.0f, 0.0f, 1.0f);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(mg45_3);
 		glVertex3fv(mg35);
@@ -664,7 +736,10 @@ void marina(void)
 		glEnd();
 
 		//s19
-		glColor3f(1.0f, 0.0f, 1.0f);
+		//(1.0f, 0.0f, 1.0f);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(mg45_4);
 		glVertex3fv(mg36);
@@ -674,7 +749,10 @@ void marina(void)
 		glEnd();
 
 		//s20
-		glColor3f(1.0f, 0.0f, 1.0f);
+		//(1.0f, 0.0f, 1.0f);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(mg36);
 		glVertex3fv(mg37);
@@ -685,7 +763,10 @@ void marina(void)
 		glEnd();
 
 		//s21
-		glColor3f(1.0f, 0.0f, 1.0f);
+		//(1.0f, 0.0f, 1.0f);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(mg45_5);
 		glVertex3fv(mg42);
@@ -699,6 +780,9 @@ void marina(void)
 
 		//s4
 		glColor3f(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(m08);
 		glVertex3fv(mg08);
@@ -707,7 +791,10 @@ void marina(void)
 		glEnd();
 
 		//s6
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(m09);
 		glVertex3fv(mg09);
@@ -715,7 +802,10 @@ void marina(void)
 		glVertex3fv(m10);
 		glEnd();
 
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(m14);
 		glVertex3fv(mg14);
@@ -724,7 +814,10 @@ void marina(void)
 		glEnd();
 
 		//s7
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(m10);
 		glVertex3fv(mg10);
@@ -732,7 +825,10 @@ void marina(void)
 		glVertex3fv(m11);
 		glEnd();
 
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(m11);
 		glVertex3fv(mg11);
@@ -740,7 +836,10 @@ void marina(void)
 		glVertex3fv(m12);
 		glEnd();
 
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(m12);
 		glVertex3fv(mg12);
@@ -748,7 +847,10 @@ void marina(void)
 		glVertex3fv(m13);
 		glEnd();
 
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(m13);
 		glVertex3fv(mg13);
@@ -757,7 +859,10 @@ void marina(void)
 		glEnd();
 
 		//s8
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(m15);
 		glVertex3fv(mg15);
@@ -766,7 +871,10 @@ void marina(void)
 		glEnd();
 
 		//s9
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(m16);
 		glVertex3fv(mg16);
@@ -774,7 +882,10 @@ void marina(void)
 		glVertex3fv(m17);
 		glEnd();
 
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(m17);
 		glVertex3fv(mg17);
@@ -783,7 +894,10 @@ void marina(void)
 		glEnd();
 
 		//s10
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(m18);
 		glVertex3fv(mg18);
@@ -791,7 +905,10 @@ void marina(void)
 		glVertex3fv(m19);
 		glEnd();
 
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(m19);
 		glVertex3fv(mg19);
@@ -799,7 +916,10 @@ void marina(void)
 		glVertex3fv(m20);
 		glEnd();
 
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(m20);
 		glVertex3fv(mg20);
@@ -808,7 +928,10 @@ void marina(void)
 		glEnd();
 
 		//s11
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(m21);
 		glVertex3fv(mg21);
@@ -816,7 +939,10 @@ void marina(void)
 		glVertex3fv(m22);
 		glEnd();
 
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(m22);
 		glVertex3fv(mg22);
@@ -824,7 +950,10 @@ void marina(void)
 		glVertex3fv(m23);
 		glEnd();
 
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(m23);
 		glVertex3fv(mg23);
@@ -833,7 +962,10 @@ void marina(void)
 		glEnd();
 
 		//s12
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(m24);
 		glVertex3fv(mg24);
@@ -841,7 +973,10 @@ void marina(void)
 		glVertex3fv(m25);
 		glEnd();
 
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(m25);
 		glVertex3fv(mg25);
@@ -849,7 +984,10 @@ void marina(void)
 		glVertex3fv(m26);
 		glEnd();
 
-		glColor3f(portr, portg, portb);
+		//(portr, portg, portb);
+//==
+
+////> refs/remotes/origin/version-4
 		glBegin(GL_POLYGON);
 		glVertex3fv(m26);
 		glVertex3fv(mg26);
@@ -857,4 +995,7 @@ void marina(void)
 		glVertex3fv(m27);
 		glEnd();
 	}
+//==
+	//glPopMatrix();
+////> refs/remotes/origin/version-4
 }
