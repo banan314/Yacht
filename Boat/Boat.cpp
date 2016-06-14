@@ -5,18 +5,7 @@
 #include <gl\glu.h>             // GLU library
 #include "../resource.h"           // About box resource identifiers.
 
-//#include "shapeUtils.h"
-//#include "../blender/bitmap.h"
-//#include "../blender/gl2.h"
-//#include "../blender/model_obj.h"
-//#include "../blender/WGL_ARB_multisample.h"
-#include "../stdafx.h"
-
-#include <sstream>
-
 #define GL_PI 3.14
-
-ModelOBJ yachtBlender;
 
 Boat::Boat()
 {

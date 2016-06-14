@@ -21,7 +21,6 @@
 
 #include "windowsUtilities.h"
 
-#include "stdafx.h" //blender
 
 #include <array>
 
@@ -89,121 +88,6 @@ float               g_maxAnisotrophy;
 //collision
 bool collisionDetected = false;
 GLfloat przyladekMariny = -500; //wspolrzedna y najdalej wysunietego punktu mariny
-
-GLuint LoadTexture(const char *pszFilename)
-{
-	GLuint id = 0;
-	Bitmap bitmap;
-	BITMAPINFOHEADER	bitmapInfoHeader;	// nagłówek obrazu
-	//unsigned char* bitmapData = LoadBitmapFile(pszFilename, &bitmapInfoHeader);
-
-	if (bitmap.loadPicture(pszFilename))
-	{
-		// The Bitmap class loads images and orients them top-down.
-		// OpenGL expects bitmap images to be oriented bottom-up.
-		bitmap.flipVertical();
-
-		glGenTextures(1, &id);
-		glBindTexture(GL_TEXTURE_2D, id);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-		if (g_maxAnisotrophy > 1.0f)
-		{
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
-				g_maxAnisotrophy);
-		}
-
-		gluBuild2DMipmaps(GL_TEXTURE_2D, 4, bitmap.width, bitmap.height, GL_BGRA_EXT, GL_UNSIGNED_BYTE, bitmap.getPixels());
-		//gluBuild2DMipmaps(GL_TEXTURE_2D, 4, bitmapInfoHeader.biWidth, bitmapInfoHeader.biHeight, GL_BGRA_EXT, GL_UNSIGNED_BYTE, bitmapData);
-	}
-
-	//free(bitmapData);
-
-	return id;
-}
-
-HGLRC Init(HDC hDC)
-{
-	static int g_msaaSamples;
-	HGLRC hRC_ret = 0;
-	int pf = 0;
-	PIXELFORMATDESCRIPTOR pfd = { 0 };
-
-	pfd.nSize = sizeof(pfd);
-	pfd.nVersion = 1;
-	pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
-	pfd.iPixelType = PFD_TYPE_RGBA;
-	pfd.cColorBits = 24;
-	pfd.cDepthBits = 16;
-	pfd.iLayerType = PFD_MAIN_PLANE;
-
-	if (IsWindowsVistaOrGreater())
-		pfd.dwFlags |= PFD_SUPPORT_COMPOSITION;
-
-	ChooseBestMultiSampleAntiAliasingPixelFormat(pf, g_msaaSamples);
-
-	if (!pf)
-		pf = ChoosePixelFormat(hDC, &pfd);
-
-	if (!SetPixelFormat(hDC, pf, &pfd))
-		throw std::runtime_error("SetPixelFormat() failed.");
-
-	// Create palette if needed
-	hPalette = GetOpenGLPalette(hDC);
-
-	if (!(hRC_ret = wglCreateContext(hDC)))
-		throw std::runtime_error("wglCreateContext() failed.");
-
-	if (!wglMakeCurrent(hDC, hRC_ret))
-		throw std::runtime_error("wglMakeCurrent() failed.");
-
-	GL2Init();
-
-	ModelOBJ::init();
-
-	// Check for GL_EXT_texture_filter_anisotropic support.
-	if (ExtensionSupported("GL_EXT_texture_filter_anisotropic", hDC))
-		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &g_maxAnisotrophy);
-	else
-		g_maxAnisotrophy = 1.0f;
-
-	return hRC_ret;
-}
-
-bool ExtensionSupported(const char *pszExtensionName, HDC hDC)
-{
-	static const char *pszGLExtensions = 0;
-	static const char *pszWGLExtensions = 0;
-
-	if (!pszGLExtensions)
-		pszGLExtensions = reinterpret_cast<const char *>(glGetString(GL_EXTENSIONS));
-
-	if (!pszWGLExtensions)
-	{
-		// WGL_ARB_extensions_string.
-
-		typedef const char *(WINAPI * PFNWGLGETEXTENSIONSSTRINGARBPROC)(HDC);
-
-		PFNWGLGETEXTENSIONSSTRINGARBPROC wglGetExtensionsStringARB =
-			reinterpret_cast<PFNWGLGETEXTENSIONSSTRINGARBPROC>(
-			wglGetProcAddress("wglGetExtensionsStringARB"));
-
-		if (wglGetExtensionsStringARB)
-			pszWGLExtensions = wglGetExtensionsStringARB(hDC);
-	}
-
-	if (!strstr(pszGLExtensions, pszExtensionName))
-	{
-		if (!strstr(pszWGLExtensions, pszExtensionName))
-			return false;
-	}
-
-	return true;
-}
 
 // Change viewing volume and viewport.  Called when window is resized
 void ChangeSize(GLsizei w, GLsizei h)
@@ -585,7 +469,6 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 		// Store the device context
 		hDC = GetDC(hWnd);
 
-		hRC = Init(hDC);
 
 		//set up physics
 		balt17.setPos(new float[3] {0.0, 0.0, 0.0});
