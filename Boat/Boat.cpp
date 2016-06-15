@@ -5,6 +5,7 @@
 #include <gl\glu.h>             // GLU library
 #include "../resource.h"           // About box resource identifiers.
 
+#include <cmath>
 #define GL_PI 3.14
 
 Boat::Boat()
