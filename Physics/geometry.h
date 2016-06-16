@@ -30,7 +30,7 @@ class Line
 {
 public:
 	Line();
-	Line(Point P1, Point P2);
+	Line(Point *P1, Point *P2);
 	double GetA();
 	double GetB();
 	double calculateDistance(Point);
@@ -47,15 +47,15 @@ Line::Line() :A(0), B(0)
 }
 //Point1_Object & Point2_Object were suppose to get
 //Passed into here
-Line::Line(Point P1, Point P2)
+Line::Line(Point *P1, Point *P2)
 {
-	p1 = P1;
-	p2 = P2;
+	p1 = *P1;
+	p2 = *P2;
 	double x1, x2, y1, y2;
-	x1 = P1.x();
-	x2 = P2.x();
-	y1 = P1.y();
-	y2 = P2.y();
+	x1 = p1.x();
+	x2 = p2.x();
+	y1 = p1.y();
+	y2 = p2.y();
 
 	//derived from slope(m) intercept(b) form
 	if (x1 != x2)
@@ -103,5 +103,5 @@ bool Line::above(Point P)
 {
 	double linePoint;
 	linePoint = A*P.y() + B*P.x() + C;
-	return (linePoint > 0.0);
+	return (linePoint*A > 0.0);
 }

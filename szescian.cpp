@@ -88,7 +88,6 @@ Boat yacht;
 float               g_maxAnisotrophy;
 
 //collision
-bool collisionDetected = false;
 GLfloat przyladekMariny = -500; //wspolrzedna y najdalej wysunietego punktu mariny
 
 // Change viewing volume and viewport.  Called when window is resized
@@ -235,6 +234,10 @@ void yachtRender(std::array<GLfloat, n> navigation[3], int i)
 	balt17.setForce(windFloatFooVar);
 	balt17.computeNew(yacht.getMass(), deltaTime);
 
+	if (collisionDetected(navigation[0][i] + balt17.getPos()[0], 
+			navigation[1][i] + balt17.getPos()[1]))
+		return;
+
 	glPushMatrix();
 
 	glTranslatef(navigation[0][i] + balt17.getPos()[0],
@@ -283,6 +286,18 @@ void light()
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT1);
 	//glEnable(GL_LIGHT0);
+}
+
+bool collisionDetected(float x, float y)
+{
+	const float nrange = 5500.0;
+	Line akwenTop(new Point(-nrange, nrange), new Point(nrange, nrange));
+	Line akwenRight(new Point(nrange, nrange), new Point(nrange, -nrange));
+	if (akwenTop.above(*(new Point(x, y))))
+		return true;
+	if (akwenRight.onTheRight(*(new Point(x, y))))
+		return true;
+	return false;
 }
 
 // Called to draw scene
