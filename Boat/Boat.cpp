@@ -11,13 +11,15 @@
 Boat::Boat()
 {
 	mass = 500.0; //kg
+	radius = 45.0;
+	posX = posY = posZ = 0.0;
 	//yachtBlender.load("blender/yacht.objblender");
-	xminOrigin = -(xmaxOrigin = 40) - 5; //min = -45, max = 40
-	yminOrigin = -(ymaxOrigin = 20);
-	xmin = xminOrigin;
-	xmax = xmaxOrigin;
-	ymin = yminOrigin;
-	ymax = ymaxOrigin;
+	//xminOrigin = -(xmaxOrigin = 40) - 5; //min = -45, max = 40
+	//yminOrigin = -(ymaxOrigin = 20);
+	//xmin = xminOrigin;
+	//xmax = xmaxOrigin;
+	//ymin = yminOrigin;
+	//ymax = ymaxOrigin;
 }
 
 void Boat::renderAll()
@@ -38,6 +40,7 @@ void Boat::renderAll(float scale)
 		renderAll(); return;
 	}
 	glPushMatrix();
+	//glTranslatef(posX, posY, posZ);
 	glScalef(scale, scale, scale);
 	glRotatef(angle * 180 / GL_PI, 0.0, 0.0, 1.0);
 	renderAll();
@@ -86,6 +89,12 @@ void Boat::renderBlender(float scale)
 
 void drawCuboid(GLfloat[6]);
 void drawTriangle(float *, float *, float *);
+
+void Boat::changePosition(float dx, float dy)
+{
+	posX += dx;
+	posY += dy;
+}
 
 void Boat::kadlub()
 {
@@ -308,28 +317,33 @@ void Boat::zagiel(float masztDlugosc, float masztDolWysokosc)
 		new float[3] { posY + (0.0f),posX + (30.0f),  posZ + (masztDolWysokosc * 2.0f / 3.0f)});*/
 }
 
-void Boat::setPosition(float x, float y)
+void Boat::setPosition(float _x, float _y)
 {
-	posX = x;
-	posY = y;
+	x = _x;
+	y = _y;
 
-	xmax = xmaxOrigin * cos(getAngle());
+	/*xmax = xmaxOrigin * cos(getAngle());
 	ymax = ymaxOrigin * sin(getAngle());
 	xmin = xminOrigin * cos(getAngle());
-	ymin = yminOrigin * sin(getAngle());
+	ymin = yminOrigin * sin(getAngle());*/
 }
 
-void Boat::setPosition(float x, float y, float z)
+void Boat::setPosition(float _x, float _y, float _z)
 {
-	posX = x;
-	posY = y;
-	posZ = z;
+	x = _x;
+	y = _y;
+	z = _z;
 }
 
-bool Boat::isCollision(float przyladek)
+float *Boat::getPosition()
 {
-	return (przyladek > ymin);
+	return new float[3] {x, y, z};
 }
+
+//bool Boat::isCollision(float przyladek)
+//{
+//	return (przyladek > ymin);
+//}
 
 Boat::~Boat()
 {

@@ -46,7 +46,7 @@ static GLfloat xTrans, yTrans, zTrans;
 //boat constants
 std::array<GLfloat, 200> navigation[3];
 GLfloat navAngle[200];
-Physics balt17; //yacht physics
+Physics balt17Physics; //yacht physics
 float windFloatFooVar[3] = { 0, 0, 0.0f }; //variable needed for AntTweakBar to work
 float boatScale = 1.0; //scale factor of boat
 
@@ -228,20 +228,27 @@ void setPath()
 template<size_t n>
 void yachtRender(std::array<GLfloat, n> navigation[3], int i)
 {
-	yacht.setPosition(0.0, 0.0, 0.0);
+	/*float deltaNavX = navigation[0][i] - navigation[0][(i - 1 + n) % n];
+	float deltaNavY = navigation[1][i] - navigation[1][(i - 1 + n) % n];*/
+	const float heightAboveWater = 0.001;
 
+	balt17Physics.setForce(windFloatFooVar);
+	balt17Physics.computeNew(yacht.getMass(), deltaTime);
 
-	balt17.setForce(windFloatFooVar);
-	balt17.computeNew(yacht.getMass(), deltaTime);
-
-	if (collisionDetected(navigation[0][i] + balt17.getPos()[0], 
-			navigation[1][i] + balt17.getPos()[1]))
+	if (collisionDetected(navigation[0][i] + balt17Physics.getPos()[0], 
+			navigation[1][i] + balt17Physics.getPos()[1], yacht.radius))
 		return;
 
-	glPushMatrix();
+	
 
-	glTranslatef(navigation[0][i] + balt17.getPos()[0],
-		navigation[1][i] + balt17.getPos()[1], navigation[2][i] + balt17.getPos()[2]);
+	glPushMatrix();
+	//yacht.setPosition(0.0, 0.0, 0.0);
+	/*yacht.changePosition(deltaNavX, deltaNavY);
+	yacht.changePosition(balt17Physics.getPos()[0], balt17Physics.getPos()[1]);*/
+	yacht.setPosition(navigation[0][i] + balt17Physics.getPos()[0],
+		navigation[1][i] + balt17Physics.getPos()[1]);
+	glTranslatef(navigation[0][i] + balt17Physics.getPos()[0],
+		navigation[1][i] + balt17Physics.getPos()[1], navigation[2][i] + balt17Physics.getPos()[2] + heightAboveWater);
 	yacht.setAngle(navAngle[i]);
 	if (boatScale != 0.0)
 	{
@@ -255,7 +262,6 @@ void yachtRender(std::array<GLfloat, n> navigation[3], int i)
 		yacht.renderAll();
 		yacht.renderMirror();
 	}
-
 	glPopMatrix();
 }
 
@@ -288,7 +294,7 @@ void light()
 	//glEnable(GL_LIGHT0);
 }
 
-bool collisionDetected(float x, float y)
+bool collisionDetected(float x, float y, float r)
 {
 	const float nrange = 5500.0;
 	Line akwenTop(new Point(-nrange, nrange), new Point(nrange, nrange));
@@ -297,6 +303,17 @@ bool collisionDetected(float x, float y)
 		return true;
 	if (akwenRight.onTheRight(*(new Point(x, y))))
 		return true;
+
+	const float marinaPoint01[] = { 4000.0f, 800.0f, 0.0f };
+	const float marinaPoint02[] = { 4200.0f, -1900.0f, 0.0f };
+	const float marinaPoint03[] = { 1700.0f, -1000.0f, 0.0f };
+	const float marinaPoint04[] = { 800.0f, -450.0f, 0.0f };
+	const float marinaPoint05[] = { -130.0f, -650.0f, 0.0f }; //to, albo
+	//const float marinaPoint05[] = { -220.0f, -770.0f, 0.0f };
+	const float marinaPoint06[] = { -190.0f, -1970.0f, 0.0f };
+	const float marinaPoint07[] = { -1390.0f, -2370.0f, 0.0f };
+	const float marinaPoint08[] = { -2900.0f, 0.0f, -770.0f };
+
 	return false;
 }
 
@@ -339,16 +356,8 @@ void RenderScene(void)
 	//Uzyskanie siatki:
 	//glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
 
-	//Boat yacht;
-	//yacht.setPosition(0.0, 0.0, 0.0);
-	//yacht.renderAll();
-
 	//Rysowanie obiektów:
 	marina();
-
-
-	//fill navigation array with coordinates of boat swimming
-	setPath();
 
 	if (trajectoryVisible)
 		swimming<200>(navigation); //draw trajectory of boat swimming
@@ -486,12 +495,17 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 		// Store the device context
 		hDC = GetDC(hWnd);
 
+		//fill navigation array with coordinates of boat swimming
+		setPath();
+
+		//set initial position of yacht
+		yacht.setPosition(navigation[time][0], navigation[time][1], navigation[time][2]);
 
 		//set up physics
-		balt17.setPos(new float[3] {0.0, 0.0, 0.0});
-		balt17.setVel(new float[3] {0.0, 0.0, 0.0});
-		balt17.setAccel(new float[3] {0.0, 0.0, 0.0});
-		balt17.setForce(new float[3] { 0.0f, 0, 0.0f });
+		balt17Physics.setPos(new float[3] {0.0, 0.0, 0.0});
+		balt17Physics.setVel(new float[3] {0.0, 0.0, 0.0});
+		balt17Physics.setAccel(new float[3] {0.0, 0.0, 0.0});
+		balt17Physics.setForce(new float[3] { 0.0f, 0, 0.0f });
 
 		//set timer for time-out 70ms
 		SetTimer(hWnd, TimerID, 70, NULL);
