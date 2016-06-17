@@ -11,7 +11,7 @@
 Boat::Boat()
 {
 	mass = 500.0; //kg
-	radius = 45.0;
+	radius = 45.0 * absoluteScalingFactor;
 	posX = posY = posZ = 0.0;
 	//yachtBlender.load("blender/yacht.objblender");
 	//xminOrigin = -(xmaxOrigin = 40) - 5; //min = -45, max = 40
@@ -34,6 +34,7 @@ void Boat::renderAll()
 
 void Boat::renderAll(float scale)
 {
+	radius = 45.0 * absoluteScalingFactor * scale;
 	scale *= absoluteScalingFactor;
 	if (scale == 0.0)
 	{

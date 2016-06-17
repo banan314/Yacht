@@ -296,6 +296,8 @@ void light()
 
 bool collisionDetected(float x, float y, float r)
 {
+	Point boat(x, y);
+
 	const float nrange = 5500.0;
 	Line akwenTop(new Point(-nrange, nrange), new Point(nrange, nrange));
 	Line akwenRight(new Point(nrange, nrange), new Point(nrange, -nrange));
@@ -304,15 +306,48 @@ bool collisionDetected(float x, float y, float r)
 	if (akwenRight.onTheRight(*(new Point(x, y))))
 		return true;
 
-	const float marinaPoint01[] = { 4000.0f, 800.0f, 0.0f };
-	const float marinaPoint02[] = { 4200.0f, -1900.0f, 0.0f };
-	const float marinaPoint03[] = { 1700.0f, -1000.0f, 0.0f };
-	const float marinaPoint04[] = { 800.0f, -450.0f, 0.0f };
-	const float marinaPoint05[] = { -130.0f, -650.0f, 0.0f }; //to, albo
-	//const float marinaPoint05[] = { -220.0f, -770.0f, 0.0f };
-	const float marinaPoint06[] = { -190.0f, -1970.0f, 0.0f };
-	const float marinaPoint07[] = { -1390.0f, -2370.0f, 0.0f };
-	const float marinaPoint08[] = { -2900.0f, 0.0f, -770.0f };
+	 Point marinaPoint01 (4000.0f, 800.0f);
+	 Point marinaPoint02 (4200.0f, -1900.0f);
+	 Point marinaPoint03 (1700.0f, -1000.0f);
+	 Point marinaPoint04 (800.0f, -450.0f);
+	 Point marinaPoint05 (-130.0f, -650.0f); //to, albo
+	// Point marinaPoint05 ( -220.0f, -770.0f );
+	 Point marinaPoint06 (-190.0f, -1970.0f);
+	 Point marinaPoint07 (-1390.0f, -2370.0f);
+	 Point marinaPoint08 (-2900.0f, 0.0f);
+
+	Line leftMarina12(&marinaPoint01, &marinaPoint02);
+	Line leftMarinaIntersection15(&marinaPoint01, &marinaPoint05);
+	if (leftMarina12.calculateDistance(boat) <= r && !leftMarinaIntersection15.above(boat))
+		return true;
+
+	Line marina23(&marinaPoint02, &marinaPoint03);
+	Line marina36(&marinaPoint03, &marinaPoint06);
+	if (marina23.calculateDistance(boat) <= r && !marina36.above(boat))
+		return true;
+
+	Line marina56(&marinaPoint05, &marinaPoint06);
+	Line marina67(&marinaPoint06, &marinaPoint07);
+	Line marina78(&marinaPoint07, &marinaPoint08);
+	Line marina58(&marinaPoint05, &marinaPoint08);
+	if (!marina56.onTheRight(boat) && marina67.above(boat) && marina78.onTheRight(boat)
+		&& !marina58.above(boat))
+	{
+		/*if (marinaPoint05.dist(boat) <= r)
+			return true;
+		if (marinaPoint06.dist(boat) <= r)
+			return true;
+		if (marinaPoint07.dist(boat) <= r)
+			return true;
+		if (marinaPoint08.dist(boat) <= r)
+			return true;*/
+		if (marina56.calculateDistance(boat) <= r)
+			return true;
+		if (marina67.calculateDistance(boat) <= r)
+			return true;
+		if (marina78.calculateDistance(boat) <= r)
+			return true;
+	}
 
 	return false;
 }
