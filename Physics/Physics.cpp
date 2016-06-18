@@ -5,7 +5,7 @@ Physics::Physics()
 {
 	for (int i = 0; i < 3; i++)
 	{
-		posNew[i] = 0.0;
+		deltaPos[i] = 0.0;
 	}
 	for (int i = 0; i < 3; i++)
 	{
@@ -21,11 +21,10 @@ void Physics::computeNew(float mass, float deltaTime)
 {
 	for (int i = 0; i < 3; i++)
 	{
-		posOld[i] = posNew[i];
 		velOld[i] = velNew[i];
 		accelOld[i] = accelNew[i];
 		
-		this->posNew[i] = this->posOld[i] + this->velNew[i] * deltaTime;
+		deltaPos[i] = this->velNew[i] * deltaTime;
 		this->velNew[i] = this->velOld[i] + this->accelNew[i] * deltaTime;
 		this->accelNew[i] = (1 / mass) * force[i];
 	}

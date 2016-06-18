@@ -41,7 +41,7 @@ static HINSTANCE hInstance;
 // Rotation and translation amounts
 static GLfloat xRot = 0.0f;
 static GLfloat yRot = 0.0f;
-static GLfloat xTrans, yTrans, zTrans;
+//static GLfloat xTrans, yTrans, zTrans;
 
 //boat constants
 std::array<GLfloat, 200> navigation[3];
@@ -49,10 +49,14 @@ GLfloat navAngle[200];
 Physics balt17Physics; //yacht physics
 float windFloatFooVar[3] = { 0, 0, 0.0f }; //variable needed for AntTweakBar to work
 float boatScale = 1.0; //scale factor of boat
+//motors
+static bool boatUserLeft, boatUserRight, boatUserForward, boatUserBackward;
+const float motorForce = 10.0;
+//const float leftMotorForce = motorForce, rightMotorForce = motorForce;
 
 //time constants
 int time = 0; 
-float deltaTime = 1;
+float deltaTime = 35; //how many seconds is 1 tick of clock
 
 static GLsizei lastHeight;
 static GLsizei lastWidth;
@@ -235,10 +239,14 @@ void yachtRender(std::array<GLfloat, n> navigation[3], int i)
 	balt17Physics.setForce(windFloatFooVar);
 	balt17Physics.computeNew(yacht.getMass(), deltaTime);
 
-	if (collisionDetected(navigation[0][i] + balt17Physics.getPos()[0], 
-			navigation[1][i] + balt17Physics.getPos()[1], yacht.radius))
+	if (collisionDetected(navigation[0][i] + balt17Physics.getPos()[0],
+		navigation[1][i] + balt17Physics.getPos()[1], yacht.radius))
+	{
+		//if collision then zero force, velocity etc.
+		balt17Physics.setForce(new float[3] {0, 0, 0});
+		balt17Physics.computeNew(1, deltaTime);
 		return;
-
+	}
 	
 
 	glPushMatrix();
@@ -249,7 +257,8 @@ void yachtRender(std::array<GLfloat, n> navigation[3], int i)
 		navigation[1][i] + balt17Physics.getPos()[1]);
 	glTranslatef(navigation[0][i] + balt17Physics.getPos()[0],
 		navigation[1][i] + balt17Physics.getPos()[1], navigation[2][i] + balt17Physics.getPos()[2] + heightAboveWater);
-	yacht.setAngle(navAngle[i]);
+	if (boatMoving)
+		yacht.setAngle(navAngle[i]);
 	if (boatScale != 0.0)
 	{
 		yacht.renderAll(boatScale);
@@ -366,7 +375,6 @@ void RenderScene(void)
 	glLoadIdentity();
 	glRotatef(xRot, 1.0f, 0.0f, 0.0f);
 	glRotatef(yRot, 0.0f, 0.0f, 1.0f);
-	glTranslatef(xTrans, yTrans, zTrans);
 
 
 	/////////////////////////////////////////////////////////////////
@@ -536,8 +544,13 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 		//set initial position of yacht
 		yacht.setPosition(navigation[time][0], navigation[time][1], navigation[time][2]);
 
+		//set initial motor states
+		boatUserBackward = false;
+		boatUserForward = false;
+		boatUserLeft = false;
+		boatUserRight = false;
+
 		//set up physics
-		balt17Physics.setPos(new float[3] {0.0, 0.0, 0.0});
 		balt17Physics.setVel(new float[3] {0.0, 0.0, 0.0});
 		balt17Physics.setAccel(new float[3] {0.0, 0.0, 0.0});
 		balt17Physics.setForce(new float[3] { 0.0f, 0, 0.0f });
@@ -775,13 +788,13 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 
 					   const float translateScene = 30.0f;
 					   if (wParam == 0x41 + 'd' - 'a') //key d
-						   xTrans += translateScene;
+						   boatUserRight = true;
 					   if (wParam == 0x41)				//key a
-						   xTrans -= translateScene;
+						   boatUserLeft = true;
 					   if (wParam == 0x41 + 'w' - 'a') //key w
-						   yTrans += translateScene;
+						   boatUserForward = true;
 					   if (wParam == 0x41 + 's' - 'a') //key s
-						   yTrans -= translateScene;
+						   boatUserBackward = true;
 
 					   if (wParam == VK_ADD)
 					   {
@@ -841,8 +854,31 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 
 	case WM_TIMER:
 	{
-		//change the position of the boat
-						
+					 float xAxis = cos(yacht.getAngle());
+					 float yAxis = sin(yacht.getAngle());
+					 if (boatUserForward)
+					 {
+						 balt17Physics.setForce(new float[3] {xAxis * motorForce, yAxis * motorForce, 0.0});
+						 balt17Physics.computeNew(yacht.getMass(), deltaTime);
+						 boatUserForward = false;
+					 }
+					 if (boatUserBackward)
+					 {
+						 balt17Physics.setForce(new float[3] {-xAxis * motorForce, -yAxis * motorForce, 0.0});
+						 balt17Physics.computeNew(yacht.getMass(), deltaTime);
+						 boatUserBackward = false;
+					 }
+					 if (boatUserLeft)
+					 {
+						 yacht.decreaseAngle(0.14);
+						 boatUserLeft = false;
+					 }
+					 if (boatUserRight)
+					 {
+						 yacht.increaseAngle(0.14);
+						 boatUserRight = false;
+					 }
+				//change the position of the boat		
 				if ((unsigned)time < navigation[0].size() - 1)
 					time++;
 				else
