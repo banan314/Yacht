@@ -32,6 +32,8 @@ public:
 	//bool isCollision(float przyladek);
 	float getAngle() { return this->angle; }
 	void setAngle(float a) { this->angle = a; }
+	void decreaseAngle(float da) { this->angle -= da; }
+	void increaseAngle(float ia) { this->angle += ia; }
 	~Boat();
 };
 
