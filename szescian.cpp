@@ -361,6 +361,41 @@ bool collisionDetected(float x, float y, float r)
 	return false;
 }
 
+bool isPortOrAqua(float x, float y)
+{
+	Point portPoint(x, y);
+
+	Point marinaPoint01(4000.0f, 800.0f);
+	Point marinaPoint02(4200.0f, -1900.0f);
+	Point marinaPoint03(1700.0f, -1000.0f);
+	Point marinaPoint04(800.0f, -450.0f);
+	Point marinaPoint05(-130.0f, -650.0f); //to, albo
+	// Point marinaPoint05 ( -220.0f, -770.0f );
+	Point marinaPoint06(-190.0f, -1970.0f);
+	Point marinaPoint07(-1390.0f, -2370.0f);
+	Point marinaPoint08(-2900.0f, 0.0f);
+
+	Line marina23(&marinaPoint02, &marinaPoint03);
+	Line marina56(&marinaPoint05, &marinaPoint06);
+	Line marina12(&marinaPoint01, &marinaPoint02);
+	Line marina35(&marinaPoint03, &marinaPoint05);
+	Line marina78(&marinaPoint07, &marinaPoint08);
+	Line marina27(&marinaPoint02, &marinaPoint07);
+	//is inside port
+	if (!marina23.above(portPoint) &&
+		marina12.onTheRight(portPoint) &&
+		!marina35.above(portPoint) &&
+		!marina56.onTheRight(portPoint))
+		return true;
+	//lub jest na akwenie
+	if (marina12.onTheRight(portPoint) &&
+		!marina78.onTheRight(portPoint) &&
+		marina27.above(portPoint))
+		return true;
+
+	return false;
+}
+
 // Called to draw scene
 void RenderScene(void)
 {
