@@ -51,7 +51,7 @@ float windFloatFooVar[3] = { 0, 0, 0.0f }; //variable needed for AntTweakBar to 
 float boatScale = 1.0; //scale factor of boat
 //motors
 static bool boatUserLeft, boatUserRight, boatUserForward, boatUserBackward;
-const float motorForce = 10.0;
+static float motorForce = 10.0;
 //const float leftMotorForce = motorForce, rightMotorForce = motorForce;
 
 //time constants
@@ -239,26 +239,35 @@ void yachtRender(std::array<GLfloat, n> navigation[3], int i)
 	balt17Physics.setForce(windFloatFooVar);
 	balt17Physics.computeNew(yacht.getMass(), deltaTime);
 
-	if (collisionDetected(navigation[0][i] + balt17Physics.getPos()[0],
-		navigation[1][i] + balt17Physics.getPos()[1], yacht.radius))
-	{
-		//if collision then zero force, velocity etc.
-		balt17Physics.setForce(new float[3] {0, 0, 0});
-		balt17Physics.computeNew(1, deltaTime);
-		return;
-	}
-	
-
 	glPushMatrix();
-	//yacht.setPosition(0.0, 0.0, 0.0);
-	/*yacht.changePosition(deltaNavX, deltaNavY);
-	yacht.changePosition(balt17Physics.getPos()[0], balt17Physics.getPos()[1]);*/
-	yacht.setPosition(navigation[0][i] + balt17Physics.getPos()[0],
-		navigation[1][i] + balt17Physics.getPos()[1]);
-	glTranslatef(navigation[0][i] + balt17Physics.getPos()[0],
-		navigation[1][i] + balt17Physics.getPos()[1], navigation[2][i] + balt17Physics.getPos()[2] + heightAboveWater);
+
 	if (boatMoving)
+	{
+		yacht.setPosition(navigation[0][i] + balt17Physics.getPos()[0],
+			navigation[1][i] + balt17Physics.getPos()[1]);
 		yacht.setAngle(navAngle[i]);
+		glTranslatef(navigation[0][i] + balt17Physics.getPos()[0],
+			navigation[1][i] + balt17Physics.getPos()[1],
+			navigation[2][i] + balt17Physics.getPos()[2] + heightAboveWater);
+	}
+	else {
+		yacht.setPosition(balt17Physics.getPos()[0], balt17Physics.getPos()[1]);
+		glTranslatef(balt17Physics.getPos()[0],
+			balt17Physics.getPos()[1],
+			balt17Physics.getPos()[2] + heightAboveWater);
+	}
+
+	if (collisionDetected(yacht.getPosition()[0], yacht.getPosition()[1], yacht.radius))
+	{
+		//if collision then zero go back with the boat
+		/*balt17Physics.setForce(new float[3] {0, 0, 0});
+		balt17Physics.computeNew(1, deltaTime);*/
+		boatUserBackward = true;
+		glPopMatrix();
+		return;
+
+	}
+		
 	if (boatScale != 0.0)
 	{
 		yacht.renderAll(boatScale);
@@ -355,6 +364,15 @@ bool collisionDetected(float x, float y, float r)
 		if (marina67.calculateDistance(boat) <= r)
 			return true;
 		if (marina78.calculateDistance(boat) <= r)
+			return true;
+	}
+
+	Line marina35(&marinaPoint03, &marinaPoint05);
+	if (!marina56.onTheRight(boat))
+	{
+		if (marina35.calculateDistance(boat) <= r)
+			return true;
+		if (marina23.calculateDistance(boat) <= r)
 			return true;
 	}
 
@@ -679,6 +697,8 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 			" label='trajectory' key=space help='Toggle visibility of path trajectory' ");
 		TwAddVarRW(bar, "Movement", TW_TYPE_BOOL32, &boatMoving,
 			" label='plywanie' help='make the boat swim or not swim on the drawn path' ");
+		TwAddVarRW(bar, "motor yachtu", TW_TYPE_FLOAT, &motorForce,
+			"label='sila motorow' min=5 max=30 step=5");
 		
 		// Add the enum variable 'globalCamera' to 'bar'
 		// (before adding an enum variable, its enum type must be declared to AntTweakBar as follow)
@@ -693,7 +713,7 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 				" keyIncr='<' keyDecr='>' help='Change camera view.' ");
 		}
 
-		TwBar *camera;
+		/*TwBar *camera;
 		camera = TwNewBar("Camera");
 		TwAddVarRW(camera, "eyex", TW_TYPE_DOUBLE, (globalCamera[CAMERA_USER].eye),
 			"label='eye x' min=-2000 max=2000 keyIncr=1 keyDecr=CTRL+1 step=1");
@@ -712,7 +732,7 @@ LRESULT CALLBACK WndProc(HWND    hWnd,
 		TwAddVarRW(camera, "upy", TW_TYPE_DOUBLE, (globalCamera[CAMERA_USER].up + 1),
 			"label='up y' min=-500 max=500 keyIncr=8 keyDecr=CTRL+8 step=10");
 		TwAddVarRW(camera, "upz", TW_TYPE_DOUBLE, (globalCamera[CAMERA_USER].up + 2),
-			"label='up z' min=-500 max=500 keyIncr=9 keyDecr=CTRL+9 step=10");
+			"label='up z' min=-500 max=500 keyIncr=9 keyDecr=CTRL+9 step=10");*/
 		//------------------------------------------
 
 		
